@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">AppHisLib</string>
+    <string name="imgApp">ImagenApp</string>
+    <string name="txtCorreo">Correo</string>
+    <string name="txtIntroduceUsuario">Introduce un usuario</string>
+    <string name="txtPassword">Contrasena</string>
+    <string name="txtIntroducePassword">Introduce contrasena</string>
+    <string name="txtRepitePassword">Repite Contrasena</string>
+    <string name="txtIntroduceRepitePassword">Vuelva a escribir la contrasena</string>
+    <string name="btnEntrar">Entrar</string>
+    <string name="btnRegistrar">Registrarse</string>
+    <string name="txtRegistro">REGISTRO DE USUARIO</string>
+    <string name="btnFinalizar">Finalizar</string>
+    <string name="btnVolver">Volver</string>
+</resources>

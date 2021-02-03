@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "585006174329",
+    "project_id": "apphislib-dd276",
+    "storage_bucket": "apphislib-dd276.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585006174329:android:985ced75d9dfede26b44a8",
+        "android_client_info": {
+          "package_name": "com.example.AppHisLib"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "585006174329-jibgaa7pjpic935qe35jf2fl6nf5robo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8q7PAXyUUgtLHBZPSP7ZVCmeVXHd0Gkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585006174329-jibgaa7pjpic935qe35jf2fl6nf5robo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
