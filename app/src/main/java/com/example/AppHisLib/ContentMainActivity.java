@@ -55,7 +55,6 @@ public class ContentMainActivity extends BaseActivity {
         btnNavegacion = (BottomNavigationView)findViewById(R.id.btnNavegacion);
 
         btnNavegacion.setOnNavigationItemSelectedListener(this);
-        btnNavegacion.bringToFront();
 
 
     } //fin onCreate

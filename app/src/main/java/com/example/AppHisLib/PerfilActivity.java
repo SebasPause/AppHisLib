@@ -27,8 +27,23 @@ public class PerfilActivity extends BaseActivity {
         btnNavegacion = (BottomNavigationView)findViewById(R.id.btnNavegacion);
 
         btnNavegacion.setOnNavigationItemSelectedListener(this);
-        btnNavegacion.bringToFront();
 
+    }
+
+    private void updateNavigationBarState(){
+        int actionId = getBottomNavigationMenuItemId();
+        selectedBottomNavigationBarItem(actionId);
+    }
+
+    void selectedBottomNavigationBarItem(int itemId){
+        MenuItem item = btnNavegacion.getMenu().findItem(itemId);
+        item.setChecked(true);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateNavigationBarState();
     }
 
     @Override

@@ -24,7 +24,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
         btnNavegacion = (BottomNavigationView)findViewById(R.id.btnNavegacion);
 
         btnNavegacion.setOnNavigationItemSelectedListener(this);
-        btnNavegacion.bringToFront();
 
 
     }
