@@ -1,17 +1,18 @@
 package com.example.AppHisLib;
 
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.MenuItem;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class LibrosActivity extends BaseActivity {
+public abstract class BaseActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     BottomNavigationView btnNavegacion;
 
@@ -19,13 +20,26 @@ public class LibrosActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.libros);
-
+        setContentView(getLayoutId());
         btnNavegacion = (BottomNavigationView)findViewById(R.id.btnNavegacion);
 
         btnNavegacion.setOnNavigationItemSelectedListener(this);
         btnNavegacion.bringToFront();
 
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateNavigationBarState();
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -50,14 +64,18 @@ public class LibrosActivity extends BaseActivity {
         return true;
     }
 
-
-    @Override
-    int getBottomNavigationMenuItemId() {
-        return R.id.irLibros;
+    private void updateNavigationBarState(){
+        int actionId = getBottomNavigationMenuItemId();
+        selectedBottomNavigationBarItem(actionId);
     }
 
-    @Override
-    int getLayoutId() {
-        return R.layout.libros;
+    void selectedBottomNavigationBarItem(int itemId){
+        MenuItem item = btnNavegacion.getMenu().findItem(itemId);
+        item.setChecked(true);
     }
+
+    abstract int getBottomNavigationMenuItemId();
+
+    abstract int getLayoutId();
+
 }
