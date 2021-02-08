@@ -41,20 +41,16 @@ public class ContentMainActivity extends BaseActivity {
 
         btnProbar = (Button)findViewById(R.id.btnProbar);
 
-        btnProbar.setOnClickListener(v -> {
-            usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Users");
+        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Users");
 
-            System.out.println(usuario);
-
+        if(myRef.child(usuario).getKey()==usuario){
+            Toast.makeText(this, "El usuario ya esta en la base de datos", Toast.LENGTH_SHORT).show();
+        }else{
             myRef.child(usuario).setValue(usuario);
-
-            System.out.println(myRef);
-
-
-
-            Toast.makeText(this, "usuario almacenado", Toast.LENGTH_SHORT).show();
-        });
+            Toast.makeText(this, "Usuario añadido a la base de datos", Toast.LENGTH_SHORT).show();
+        }
+        System.out.println(myRef);
 
         btnNavegacion = (BottomNavigationView)findViewById(R.id.btnNavegacion);
 
