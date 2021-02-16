@@ -1,4 +1,4 @@
-package com.example.AppHisLib;
+package com.example.AppHisLib.presentacion;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,12 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.example.AppHisLib.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -58,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.d("TAG", "signInWithCustomToken:success");
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     updateUI(user);
-                                        Intent intent = new Intent(MainActivity.this,ContentMainActivity.class);
+                                        Intent intent = new Intent(MainActivity.this, ContentMainActivity.class);
                                     intent.putExtra("email", task.getResult().getUser().getEmail());
                                     startActivity(intent);
 

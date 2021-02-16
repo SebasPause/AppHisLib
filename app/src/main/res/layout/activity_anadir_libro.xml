@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentacion.AnadirLibro">
+
+        <!--Para la foto -->
+        <ImageView
+            android:id="@+id/imgAnadirLibro"
+            android:layout_width="132dp"
+            android:layout_height="123dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_book" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/imgAnadirLibro"
+            android:layout_toRightOf="@+id/imgListaLibros"
+            android:orientation="vertical">
+
+            /<!--Para el nombre -->
+            <EditText
+                android:id="@+id/txtAutor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Autor"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/txtDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="133dp"
+                android:textColor="@color/black"
+                android:maxLength="180"
+                android:text="Descripcion Max 180 caracteres"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/txtGenero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Genero"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/guardarLibro"
+        android:layout_width="93dp"
+        android:layout_height="80dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="62dp"
+        android:contentDescription="Guardar Libro"
+        android:src="@drawable/ic_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</RelativeLayout>

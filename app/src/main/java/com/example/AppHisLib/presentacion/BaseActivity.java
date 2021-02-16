@@ -1,4 +1,4 @@
-package com.example.AppHisLib;
+package com.example.AppHisLib.presentacion;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -8,8 +8,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
+import com.example.AppHisLib.presentacion.ContentMainActivity;
+import com.example.AppHisLib.presentacion.LibrosActivity;
+import com.example.AppHisLib.presentacion.PerfilActivity;
+import com.example.AppHisLib.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public abstract class BaseActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -47,15 +50,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
             int itemId = item.getItemId();
             Intent intent;
             if(itemId == R.id.irPerfil){
-                intent = new Intent(this,PerfilActivity.class);
+                intent = new Intent(this, PerfilActivity.class);
                 startActivity(intent);
             }
             if(itemId == R.id.irPrincipal){
-                intent = new Intent(this,ContentMainActivity.class);
+                intent = new Intent(this, ContentMainActivity.class);
                 startActivity(intent);
             }
             if(itemId == R.id.irLibros){
-                intent = new Intent(this,LibrosActivity.class);
+                intent = new Intent(this, LibrosActivity.class);
                 startActivity(intent);
             }
             finish();

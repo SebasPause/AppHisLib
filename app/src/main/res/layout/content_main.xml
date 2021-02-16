@@ -18,17 +18,6 @@
 
     </ListView>
 
-    <Button
-        android:id="@+id/btnProbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="133dp"
-        android:layout_marginLeft="133dp"
-        android:layout_marginTop="324dp"
-        android:text="Enviar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <include
         layout="@layout/item_bottom_navigation"
         android:layout_width="match_parent"

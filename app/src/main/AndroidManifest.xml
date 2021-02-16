@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.AppHisLib">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,21 +14,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppHisLib">
-        <activity android:name=".BaseActivity"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".presentacion.AnadirLibro"></activity>
+        <activity android:name=".presentacion.BaseActivity" />
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Theme.AppCompat" />
+        <activity android:name=".presentacion.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ComValLibroActivity" />
-        <activity android:name=".VerLibroActivity" />
-        <activity android:name=".RegistroActivity" />
-        <activity android:name=".EditarPerfilActivity" />
-        <activity android:name=".PerfilActivity" />
-        <activity android:name=".LibrosActivity" />
-        <activity android:name=".ContentMainActivity" />
+        <activity android:name=".presentacion.ComValLibroActivity" />
+        <activity android:name=".presentacion.VerLibroActivity" />
+        <activity android:name=".presentacion.RegistroActivity" />
+        <activity android:name=".presentacion.EditarPerfilActivity" />
+        <activity android:name=".presentacion.PerfilActivity" />
+        <activity android:name=".presentacion.LibrosActivity" />
+        <activity android:name=".presentacion.ContentMainActivity" />
     </application>
 
 </manifest>
