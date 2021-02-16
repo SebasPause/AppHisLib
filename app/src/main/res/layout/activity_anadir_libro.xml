@@ -63,7 +63,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="62dp"
         android:contentDescription="Guardar Libro"
-        android:src="@drawable/ic_add"
+        android:src="@drawable/ic_check"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

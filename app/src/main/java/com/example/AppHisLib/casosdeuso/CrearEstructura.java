@@ -4,8 +4,10 @@ import android.content.Context;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.AppHisLib.presentacion.ContentMainActivity;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -59,7 +61,15 @@ public class CrearEstructura {
                 //nada
             }
         });
+    } //fin metodo crearEstructura
 
+
+    //Metodo para borrar un libro
+    public void borrarLibro(String id,String usuarioEliminar){
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        myRef = db.getReference().child("Usuarios").child(usuarioEliminar).child("Libros").child(id);
+        myRef.removeValue();
+        Toast.makeText(contexto, "Libro borrado", Toast.LENGTH_SHORT).show();
 
     }
 

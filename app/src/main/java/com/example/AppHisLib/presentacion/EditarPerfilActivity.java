@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -34,6 +35,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -134,38 +137,35 @@ public class EditarPerfilActivity extends AppCompatActivity {
     }
 
     //FOTO PERFIL
-    public View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(EditarPerfilActivity.this);
-            builder.setMessage("Elige una opcion")
-                    .setPositiveButton("CAMARA", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //Compruebo si tiene permisos
-                            if(ActivityCompat.checkSelfPermission(EditarPerfilActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
-                                irCamara();
-                            }else{
-                                //Si no tiene permisos uso el requestPermissions
-                                ActivityCompat.requestPermissions(EditarPerfilActivity.this,new String[]{Manifest.permission.CAMERA},REQUEST_PERMISION_CAMERA);
-                            }
+    public View.OnClickListener onClickListener = v -> {
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditarPerfilActivity.this);
+        builder.setMessage("Elige una opcion")
+                .setPositiveButton("CAMARA", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Compruebo si tiene permisos
+                        if(ActivityCompat.checkSelfPermission(EditarPerfilActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+                            irCamara();
+                        }else{
+                            //Si no tiene permisos uso el requestPermissions
+                            ActivityCompat.requestPermissions(EditarPerfilActivity.this,new String[]{Manifest.permission.CAMERA},REQUEST_PERMISION_CAMERA);
                         }
-                    })
-                    .setNegativeButton("GALERIA", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //compruebo si tiene permisos de acceder a los archivos
-                            if(ActivityCompat.checkSelfPermission(EditarPerfilActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-                                irGaleria();
-                            }else{
-                                //Pido los permisos
-                                ActivityCompat.requestPermissions(EditarPerfilActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},REQUEST_PERMISION_EXTERNAL_STORAGE);
-                            }
+                    }
+                })
+                .setNegativeButton("GALERIA", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //compruebo si tiene permisos de acceder a los archivos
+                        if(ActivityCompat.checkSelfPermission(EditarPerfilActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                            irGaleria();
+                        }else{
+                            //Pido los permisos
+                            ActivityCompat.requestPermissions(EditarPerfilActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},REQUEST_PERMISION_EXTERNAL_STORAGE);
                         }
-                    });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }; //fin onClickListener
 
     @Override
@@ -195,22 +195,24 @@ public class EditarPerfilActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==REQUEST_IMAGE_CAMERA){
             if(resultCode== Activity.RESULT_OK){
-                CropImage.activity(data.getData())
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setAspectRatio(1,1)
-                        .start(this);
+                Bitmap bitmap;
+                try{
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+                    imgEditarPerfil.setImageBitmap(bitmap);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         if(requestCode == REQUEST_IMAGE_GALERY){
             if(resultCode==Activity.RESULT_OK){
-
                 CropImage.activity(data.getData())
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .setAspectRatio(1,1)
                         .start(this);
-
-
             }
             else{
                 Toast.makeText(this, "No se ha seleccionado ninguna foto", Toast.LENGTH_SHORT).show();

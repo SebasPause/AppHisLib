@@ -115,6 +115,47 @@ public class LibrosActivity extends BaseActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        myRef = db.getReference().child("Usuarios").child(usuario).child("Libros");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Libros> listaLibros = new ArrayList<>();
+                for(DataSnapshot ds : snapshot.getChildren()){
+                    String autor = ds.child("Autor").getValue(String.class);
+                    String descripcion = ds.child("Descripcion").getValue(String.class);
+                    String foto = ds.child("Foto").getValue(String.class);
+                    String genero = ds.child("Genero").getValue(String.class);
+                    String Id = ds.child("Id").getValue(String.class);
+                    String valoracion = ds.child("Valoracion").getValue(String.class);
+                    Libros libro = new Libros(autor,descripcion,genero,foto,valoracion,Id);
+
+                    listaLibros.add(libro);
+                }
+
+                libros = findViewById(R.id.rvListaLibros);
+                adapter = new AdaptadorListaLibros(LibrosActivity.this,listaLibros);
+                layoutManager = new LinearLayoutManager(LibrosActivity.this);
+                libros.setLayoutManager(layoutManager);
+                libros.setHasFixedSize(true);
+                libros.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         btnNavegacion.postDelayed(() -> {
             int itemId = item.getItemId();

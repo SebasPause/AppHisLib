@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppHisLib">
-        <activity android:name=".presentacion.AnadirLibro"></activity>
+        <activity android:name=".presentacion.AnadirLibro" />
         <activity android:name=".presentacion.BaseActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
@@ -33,6 +33,16 @@
         <activity android:name=".presentacion.PerfilActivity" />
         <activity android:name=".presentacion.LibrosActivity" />
         <activity android:name=".presentacion.ContentMainActivity" />
+        <!-- Creo un provider para tener acceso temporal a los archivos -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.AppHisLib"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>
