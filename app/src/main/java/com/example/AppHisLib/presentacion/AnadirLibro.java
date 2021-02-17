@@ -180,8 +180,7 @@ public class AnadirLibro extends AppCompatActivity {
                         //nada
                     }
                 });
-            } //fin extras null
-            else{
+            } else{
                 //Aqui va el codigo para cambiar los datos del libro
                 usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 db = FirebaseDatabase.getInstance();
@@ -330,6 +329,12 @@ public class AnadirLibro extends AppCompatActivity {
                 try{
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
                     foto.setImageBitmap(bitmap);
+
+                    CropImage.activity(data.getData())
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .setAspectRatio(1,1)
+                            .start(this);
+
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
