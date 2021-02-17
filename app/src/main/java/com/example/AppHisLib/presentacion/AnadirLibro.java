@@ -58,7 +58,7 @@ public class AnadirLibro extends AppCompatActivity {
     ActionBar actionBar;
     FloatingActionButton anadirLibro;
     EditText txtAutor,txtDescripcion,txtGenero;
-    ImageView foto;
+    ImageView imgAnadirLibro;
     Uri uri;
 
     //Para la foto del libro
@@ -77,7 +77,7 @@ public class AnadirLibro extends AppCompatActivity {
         txtAutor = findViewById(R.id.txtAutor);
         txtDescripcion = findViewById(R.id.txtDescripcion);
         txtGenero = findViewById(R.id.txtGenero);
-        foto = findViewById(R.id.imgAnadirLibro);
+        imgAnadirLibro = findViewById(R.id.imgAnadirLibro);
 
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         db = FirebaseDatabase.getInstance();
@@ -105,7 +105,7 @@ public class AnadirLibro extends AppCompatActivity {
                     + '/' + this.getResources().getResourceEntryName(R.drawable.ic_book)
             );
         }else{
-            uri = Uri.parse(foto.toString());
+            uri = Uri.parse(imgAnadirLibro.toString());
             System.out.println("Aqui la uri: "+uri);
         }
 
@@ -231,7 +231,7 @@ public class AnadirLibro extends AppCompatActivity {
         }); //fin añadirLibro
 
 
-        foto.setOnClickListener(v -> {
+        imgAnadirLibro.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(AnadirLibro.this);
             builder.setMessage("Elige una opcion")
                     .setPositiveButton("CAMARA", new DialogInterface.OnClickListener() {
@@ -275,7 +275,7 @@ public class AnadirLibro extends AppCompatActivity {
                         .load(uri)
                         .fitCenter()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
-                        .into(foto);
+                        .into(imgAnadirLibro);
             }
         });
     }
@@ -329,7 +329,7 @@ public class AnadirLibro extends AppCompatActivity {
                 Bitmap bitmap;
                 try{
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
-                    foto.setImageBitmap(bitmap);
+                    imgAnadirLibro.setImageBitmap(bitmap);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -358,7 +358,7 @@ public class AnadirLibro extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 Uri imageUri = resultado.getUri();
                 uri = imageUri;
-                foto.setImageURI(imageUri);
+                imgAnadirLibro.setImageURI(imageUri);
             } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = resultado.getError();
                 Toast.makeText(this, "" + error, Toast.LENGTH_SHORT).show();

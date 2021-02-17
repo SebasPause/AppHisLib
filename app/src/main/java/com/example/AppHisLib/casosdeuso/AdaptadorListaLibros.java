@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.presentacion.AnadirLibro;
+import com.example.AppHisLib.presentacion.EscribirLibroActivity;
 import com.example.AppHisLib.presentacion.LibrosActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -104,7 +105,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
 
     public void mostrarOpciones(String position, String id, String autor, String descripcion, String genero, String foto, String valoracion){
         //Array para que aparezca en el dialogo
-        String[] opciones = {"Ver Libro","Editar Libro","Publicar Libro","Eliminar Libro"};
+        String[] opciones = {"Ver Libro","Escribir Libro","Editar Informacion Libro","Publicar Libro","Eliminar Libro"};
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(contexto);
         builder.setTitle("Selecciona una opción");
@@ -127,12 +128,16 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                     */
                 }
                 else if(which == 1){
+                    Intent intent = new Intent(contexto, EscribirLibroActivity.class);
+                    contexto.startActivity(intent);
+                }
+                else if(which == 2){
                     Intent intent = new Intent(contexto, AnadirLibro.class);
                     intent.putExtra("EditarLibro",true);
                     intent.putExtra("IDlibro",id);
                     contexto.startActivity(intent);
                 }
-                else if(which == 2){
+                else if(which == 3){
                     //Para publicar un libro
                     AlertDialog.Builder builderEliminar = new AlertDialog.Builder(contexto);
                     builderEliminar.setTitle("Estas seguro de querer publicarlo?")
@@ -149,7 +154,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                             .setNegativeButton("No",null);
                     builderEliminar.create().show();
                 }
-                else if(which == 3){
+                else if(which == 4){
                     //Para eliminar una persona
                     AlertDialog.Builder builderEliminar = new AlertDialog.Builder(contexto);
                     builderEliminar.setTitle("Estas seguro de querer eliminarlo?")

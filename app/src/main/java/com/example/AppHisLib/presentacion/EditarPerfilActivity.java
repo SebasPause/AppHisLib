@@ -135,14 +135,14 @@ public class EditarPerfilActivity extends AppCompatActivity {
             storageRef = mStorage.getReference();
             storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(uri);
 
-            Toast.makeText(this, "Datos modificados correctamente", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Datos modificados correctamente,Volviendo al perfil", Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     Intent i=new Intent(EditarPerfilActivity.this,PerfilActivity.class);
                     startActivity(i);
                 }
-            }, 1001);
+            }, 2000);
 
         });
 
