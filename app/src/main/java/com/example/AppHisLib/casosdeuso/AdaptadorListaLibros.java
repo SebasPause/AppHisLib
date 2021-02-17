@@ -20,14 +20,19 @@ import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.presentacion.LibrosActivity;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +78,21 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
         holder.txtGenero.setText(genero);
         holder.imagenListaLibros.setImageURI(uri);
         holder.ratingBar.setRating(Float.parseFloat(valoracion));
+
+        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseStorage mStorage = FirebaseStorage.getInstance();
+        StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg");
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(contexto)
+                        .load(uri)
+                        .fitCenter()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                        .into(holder.imagenListaLibros);
+            }
+        });
+
 
 
         //Para la imagen de opciones

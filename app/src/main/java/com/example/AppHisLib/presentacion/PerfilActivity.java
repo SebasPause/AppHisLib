@@ -9,13 +9,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.DatosPerfil;
+import com.google.android.gms.common.util.JsonUtils;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +28,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class PerfilActivity extends BaseActivity {
 
@@ -56,14 +63,24 @@ public class PerfilActivity extends BaseActivity {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         myRef = db.getReference().child("Usuarios").child(usuario).child("Perfil");
+        FirebaseStorage mStorage = FirebaseStorage.getInstance();
+        StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(PerfilActivity.this)
+                        .load(uri)
+                        .fitCenter()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                        .into(imgEditarPerfil);
+            }
+        });
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 DatosPerfil datosPerfil = snapshot.getValue(DatosPerfil.class);
                 txtAutor.setText(datosPerfil.Autor);
                 txtDescripcion.setText(datosPerfil.Descripcion);
-                uri = Uri.parse(datosPerfil.Foto);
-                imgEditarPerfil.setImageURI(uri);
             }
 
             @Override
@@ -71,8 +88,6 @@ public class PerfilActivity extends BaseActivity {
 
             }
         });
-
-
 
     }
 

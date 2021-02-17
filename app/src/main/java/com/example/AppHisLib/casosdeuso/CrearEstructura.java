@@ -13,6 +13,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class CrearEstructura {
     Context contexto;
@@ -67,6 +69,10 @@ public class CrearEstructura {
     //Metodo para borrar un libro
     public void borrarLibro(String id,String usuarioEliminar){
         FirebaseDatabase db = FirebaseDatabase.getInstance();
+        FirebaseStorage mStorage = FirebaseStorage.getInstance();
+        StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuarioEliminar).child("Libros").child(id).child("Libro.jpeg");
+        System.out.println("Referencia de la imagen: "+storageRef);
+        storageRef.delete();
         myRef = db.getReference().child("Usuarios").child(usuarioEliminar).child("Libros").child(id);
         myRef.removeValue();
         Toast.makeText(contexto, "Libro borrado", Toast.LENGTH_SHORT).show();

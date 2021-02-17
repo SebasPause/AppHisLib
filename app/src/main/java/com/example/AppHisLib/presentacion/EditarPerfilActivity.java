@@ -24,14 +24,19 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.DatosPerfil;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -46,6 +51,8 @@ public class EditarPerfilActivity extends AppCompatActivity {
     ActionBar actionBar;
     EditText txtAutor,txtDescripcion,txtEdad;
     DatabaseReference myRef;
+    FirebaseStorage mStorage;
+    StorageReference storageRef;
     Button btnGuardarDatosPerfil;
     private String usuario;
     Uri uri;
@@ -74,14 +81,22 @@ public class EditarPerfilActivity extends AppCompatActivity {
         txtEdad = (EditText)findViewById(R.id.txtEdad);
         btnGuardarDatosPerfil = (Button)findViewById(R.id.btnGuardarDatosPerfil);
         imgEditarPerfil = (ImageView)findViewById(R.id.imgEditarPerfil);
-        uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                + "://" + this.getResources().getResourcePackageName(R.drawable.ic_person)
-                + '/' + this.getResources().getResourceTypeName(R.drawable.ic_person)
-                + '/' + this.getResources().getResourceEntryName(R.drawable.ic_person)
-        );
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mStorage = FirebaseStorage.getInstance();
+        storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(EditarPerfilActivity.this)
+                        .load(uri)
+                        .fitCenter()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                        .into(imgEditarPerfil);
+            }
+        });
+        uri = Uri.parse(imgEditarPerfil.toString());
         myRef = db.getReference().child("Usuarios").child(usuario).child("Perfil");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -90,8 +105,6 @@ public class EditarPerfilActivity extends AppCompatActivity {
                 txtAutor.setText(datosPerfil.Autor);
                 txtDescripcion.setText(datosPerfil.Descripcion);
                 txtEdad.setText(datosPerfil.Edad);
-                uri = Uri.parse(datosPerfil.Foto);
-                imgEditarPerfil.setImageURI(uri);
             }
 
             @Override
@@ -111,6 +124,17 @@ public class EditarPerfilActivity extends AppCompatActivity {
             String descripcion = txtDescripcion.getText().toString();
             String edad = txtEdad.getText().toString();
             String foto = ""+uri;
+            if(uri == null){
+                uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                        + "://" + EditarPerfilActivity.this.getResources().getResourcePackageName(R.drawable.ic_person)
+                        + '/' + EditarPerfilActivity.this.getResources().getResourceTypeName(R.drawable.ic_person)
+                        + '/' + EditarPerfilActivity.this.getResources().getResourceEntryName(R.drawable.ic_person)
+                );
+            }
+            System.out.println("Aqui esta la uri al guardar: "+uri);
+            mStorage = FirebaseStorage.getInstance();
+            storageRef = mStorage.getReference();
+            storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(uri);
 
             Map<String, Object> hopperUpdates = new HashMap<>();
             hopperUpdates.put("Foto",foto);
@@ -120,7 +144,8 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
             myRef.child(usuario).child("Perfil").updateChildren(hopperUpdates);
             Toast.makeText(this, "Datos modificados correctamente", Toast.LENGTH_SHORT).show();
-
+            Intent intent = new Intent(EditarPerfilActivity.this,PerfilActivity.class);
+            startActivity(intent);
         });
 
 

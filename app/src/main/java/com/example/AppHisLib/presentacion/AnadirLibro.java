@@ -32,6 +32,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -93,6 +95,10 @@ public class AnadirLibro extends AppCompatActivity {
             String genero = txtGenero.getText().toString();
             String foto = ""+uri;
 
+            FirebaseStorage mStorage = FirebaseStorage.getInstance();
+            StorageReference storageRef = mStorage.getReference();
+
+
             //Para generar una Id aleatoria y que no exista ya en el usuario
             int nrAleatorio =(int) (Math.random()*1000+1);
             id = usuario+nrAleatorio;
@@ -113,6 +119,7 @@ public class AnadirLibro extends AppCompatActivity {
                             hopperUpdates.put("Id",id);
 
                             myRef.child(id).setValue(hopperUpdates);
+                            storageRef.child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg").putFile(uri);
                             Toast.makeText(AnadirLibro.this, "Libro creado", Toast.LENGTH_SHORT).show();
                         }else{
                             Map<String, Object> hopperUpdates = new HashMap<>();
@@ -124,6 +131,7 @@ public class AnadirLibro extends AppCompatActivity {
                             hopperUpdates.put("Id",id);
 
                             myRef.child(id).setValue(hopperUpdates);
+                            storageRef.child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg").putFile(uri);
                             Toast.makeText(AnadirLibro.this, "Libro creado", Toast.LENGTH_SHORT).show();
 
                         }
