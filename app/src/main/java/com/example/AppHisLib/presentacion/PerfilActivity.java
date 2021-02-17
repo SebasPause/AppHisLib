@@ -1,5 +1,6 @@
 package com.example.AppHisLib.presentacion;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -38,6 +39,9 @@ public class PerfilActivity extends BaseActivity {
     BottomNavigationView btnNavegacion;
     private String usuario;
     DatabaseReference myRef;
+    FirebaseStorage mStorage;
+    StorageReference storageRef;
+    FirebaseDatabase db;
     Uri uri;
     ActionBar actionBar;
 
@@ -60,21 +64,11 @@ public class PerfilActivity extends BaseActivity {
 
         btnNavegacion.setOnNavigationItemSelectedListener(this);
 
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        db = FirebaseDatabase.getInstance();
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         myRef = db.getReference().child("Usuarios").child(usuario).child("Perfil");
-        FirebaseStorage mStorage = FirebaseStorage.getInstance();
-        StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
-        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(PerfilActivity.this)
-                        .load(uri)
-                        .fitCenter()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
-                        .into(imgEditarPerfil);
-            }
-        });
+        //Llamo al metodo de descargar y establecer su imagen correspondiente de perfil del storage de firebase
+        downloadSetImage();
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -88,6 +82,7 @@ public class PerfilActivity extends BaseActivity {
 
             }
         });
+        Toast.makeText(this, "Estoy en el perfil", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -96,15 +91,31 @@ public class PerfilActivity extends BaseActivity {
         selectedBottomNavigationBarItem(actionId);
     }
 
+    public void downloadSetImage(){
+        mStorage = FirebaseStorage.getInstance();
+        storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
+        storageRef.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(PerfilActivity.this)
+                .load(uri)
+                .fitCenter()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                .into(imgEditarPerfil));
+    }
+
     void selectedBottomNavigationBarItem(int itemId){
         MenuItem item = btnNavegacion.getMenu().findItem(itemId);
         item.setChecked(true);
     }
 
+
     @Override
     protected void onStart() {
         super.onStart();
         updateNavigationBarState();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override

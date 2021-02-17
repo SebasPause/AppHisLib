@@ -1,6 +1,7 @@
 package com.example.AppHisLib.casosdeuso;
 
 import android.content.Context;
+import android.net.Uri;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CrearEstructura {
     Context contexto;
@@ -53,8 +57,6 @@ public class CrearEstructura {
                     myRef.child(usuario).child("Libros").child("Libro").child("Genero").setValue("");
                     myRef.child(usuario).child("Libros").child("Libro").child("Foto").setValue("");
                     myRef.child(usuario).child("Libros").child("Libro").child("Valoracion").setValue("");
-                    //Hijo de usuario
-                    myRef.child(usuario).child("Publicados").setValue("String");
                 }
             }
 
@@ -76,6 +78,41 @@ public class CrearEstructura {
         myRef = db.getReference().child("Usuarios").child(usuarioEliminar).child("Libros").child(id);
         myRef.removeValue();
         Toast.makeText(contexto, "Libro borrado", Toast.LENGTH_SHORT).show();
+
+    }
+
+    public void publicarLibro(String id, String usuarioLibro, Uri uri){
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+
+        myRef = db.getReference().child("Usuarios").child(usuarioLibro).child("Libros").child(id);
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Libros datosLibro = snapshot.getValue(Libros.class);
+                String autor = datosLibro.Autor;
+                String descripcion = datosLibro.Descripcion;
+                String genero = datosLibro.Genero;
+                String foto = ""+uri;
+                String valoracion = datosLibro.Valoracion;
+
+                Map<String, Object> hopperUpdates = new HashMap<>();
+                hopperUpdates.put("Foto",foto);
+                hopperUpdates.put("Autor", autor);
+                hopperUpdates.put("Descripcion",descripcion);
+                hopperUpdates.put("Genero",genero);
+                hopperUpdates.put("Valoracion",valoracion);
+
+                myRef = db.getReference().child("LibrosPublicados");
+                myRef.child(id).setValue(hopperUpdates);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
     }
 

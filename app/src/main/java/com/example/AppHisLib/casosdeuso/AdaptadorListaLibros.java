@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
+import com.example.AppHisLib.presentacion.AnadirLibro;
 import com.example.AppHisLib.presentacion.LibrosActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,7 +44,6 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
     private Context contexto;
     private String usuario;
     DatabaseReference myRef;
-    //private String libros;
     List<Libros> libros;
     Uri uri;
 
@@ -104,7 +104,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
 
     public void mostrarOpciones(String position, String id, String autor, String descripcion, String genero, String foto, String valoracion){
         //Array para que aparezca en el dialogo
-        String[] opciones = {"Ver Libro","Editar Libro","Eliminar Libro"};
+        String[] opciones = {"Ver Libro","Editar Libro","Publicar Libro","Eliminar Libro"};
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(contexto);
         builder.setTitle("Selecciona una opción");
@@ -112,7 +112,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Primera opcion es 0
-                if(which==0){
+                if(which == 0){
                     //Para ir a editar una persona
                     /*Intent intent = new Intent(contexto, EditarLibroActivity.class);
                     intent.putExtra("id",idFinal);
@@ -126,7 +126,30 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                     contexto.startActivity(intent);
                     */
                 }
-                else if(which==2){
+                else if(which == 1){
+                    Intent intent = new Intent(contexto, AnadirLibro.class);
+                    intent.putExtra("EditarLibro",true);
+                    intent.putExtra("IDlibro",id);
+                    contexto.startActivity(intent);
+                }
+                else if(which == 2){
+                    //Para publicar un libro
+                    AlertDialog.Builder builderEliminar = new AlertDialog.Builder(contexto);
+                    builderEliminar.setTitle("Estas seguro de querer publicarlo?")
+                            .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                @RequiresApi(api = Build.VERSION_CODES.P)
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                    CrearEstructura ce = new CrearEstructura(contexto,usuario,myRef);
+                                    ce.publicarLibro(id,usuario,uri);
+                                    ((LibrosActivity)contexto).onResume();
+                                }
+                            })
+                            .setNegativeButton("No",null);
+                    builderEliminar.create().show();
+                }
+                else if(which == 3){
                     //Para eliminar una persona
                     AlertDialog.Builder builderEliminar = new AlertDialog.Builder(contexto);
                     builderEliminar.setTitle("Estas seguro de querer eliminarlo?")

@@ -17,14 +17,19 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
+import com.example.AppHisLib.casosdeuso.Libros;
 import com.google.android.gms.common.util.JsonUtils;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -48,6 +53,8 @@ public class AnadirLibro extends AppCompatActivity {
     private String id;
     DatabaseReference myRef;
     FirebaseDatabase db;
+    FirebaseStorage mStorage;
+    StorageReference storageRef;
     ActionBar actionBar;
     FloatingActionButton anadirLibro;
     EditText txtAutor,txtDescripcion,txtGenero;
@@ -72,76 +79,154 @@ public class AnadirLibro extends AppCompatActivity {
         txtGenero = findViewById(R.id.txtGenero);
         foto = findViewById(R.id.imgAnadirLibro);
 
+        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        db = FirebaseDatabase.getInstance();
 
-        uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                + "://" + this.getResources().getResourcePackageName(R.drawable.ic_book)
-                + '/' + this.getResources().getResourceTypeName(R.drawable.ic_book)
-                + '/' + this.getResources().getResourceEntryName(R.drawable.ic_book)
-        );
+        Bundle extras = getIntent().getExtras();
+        if(extras == null){
+            //nada
+            actionBar = getSupportActionBar();
+            actionBar.setTitle("Añadir Libro");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }else{
+            actionBar = getSupportActionBar();
+            actionBar.setTitle("Editar Libro");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            cargarDatos(extras.getString("IDlibro"));
+            cargarImagen(extras.getString("IDlibro"));
+        }
+
+        if(uri==null){
+            uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                    + "://" + this.getResources().getResourcePackageName(R.drawable.ic_book)
+                    + '/' + this.getResources().getResourceTypeName(R.drawable.ic_book)
+                    + '/' + this.getResources().getResourceEntryName(R.drawable.ic_book)
+            );
+        }else{
+            uri = Uri.parse(foto.toString());
+            System.out.println("Aqui la uri: "+uri);
+        }
+
 
         //Para la flecha de volver atras
-        actionBar = getSupportActionBar();
-        actionBar.setTitle("Añadir Libro");
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
+
 
         anadirLibro.setOnClickListener(v -> {
-            usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            db = FirebaseDatabase.getInstance();
-            myRef = db.getReference().child("Usuarios").child(usuario).child("Libros");
 
-            String autor = txtAutor.getText().toString();
-            String descripcion = txtDescripcion.getText().toString();
-            String genero = txtGenero.getText().toString();
-            String foto = ""+uri;
+            if(extras == null){
+                usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                db = FirebaseDatabase.getInstance();
+                myRef = db.getReference().child("Usuarios").child(usuario).child("Libros");
 
-            FirebaseStorage mStorage = FirebaseStorage.getInstance();
-            StorageReference storageRef = mStorage.getReference();
+                String autor = txtAutor.getText().toString();
+                String descripcion = txtDescripcion.getText().toString();
+                String genero = txtGenero.getText().toString();
+                String foto = ""+uri;
+
+                mStorage = FirebaseStorage.getInstance();
+                storageRef = mStorage.getReference();
 
 
-            //Para generar una Id aleatoria y que no exista ya en el usuario
-            int nrAleatorio =(int) (Math.random()*1000+1);
-            id = usuario+nrAleatorio;
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                        if (snapshot.hasChild(id)) {
-                            // si ya existe el id del libro en la base de datos hay que crear otro id que no coincida con el que ya hay
-                            int nrAleatorio =(int) (Math.random()*1000+1);
-                            id = usuario+nrAleatorio;
+                //Para generar una Id aleatoria y que no exista ya en el usuario
+                int nrAleatorio =(int) (Math.random()*1000+1);
+                id = usuario+nrAleatorio;
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot.hasChild(id)) {
+                                // si ya existe el id del libro en la base de datos hay que crear otro id que no coincida con el que ya hay
+                                int nrAleatorio =(int) (Math.random()*1000+1);
+                                id = usuario+nrAleatorio;
+
+                                Map<String, Object> hopperUpdates = new HashMap<>();
+                                hopperUpdates.put("Foto",foto);
+                                hopperUpdates.put("Autor", autor);
+                                hopperUpdates.put("Descripcion",descripcion);
+                                hopperUpdates.put("Genero",genero);
+                                hopperUpdates.put("Valoracion","0");
+                                hopperUpdates.put("Id",id);
+                                hopperUpdates.put("Publicado",false);
+
+                                myRef.child(id).setValue(hopperUpdates);
+                                storageRef.child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg").putFile(uri);
+                                Toast.makeText(AnadirLibro.this, "Libro creado", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Map<String, Object> hopperUpdates = new HashMap<>();
+                                hopperUpdates.put("Foto",foto);
+                                hopperUpdates.put("Autor", autor);
+                                hopperUpdates.put("Descripcion",descripcion);
+                                hopperUpdates.put("Genero",genero);
+                                hopperUpdates.put("Valoracion","0");
+                                hopperUpdates.put("Id",id);
+                                hopperUpdates.put("Publicado",false);
+
+                                myRef.child(id).setValue(hopperUpdates);
+                                storageRef.child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg").putFile(uri);
+                                Toast.makeText(AnadirLibro.this, "Libro creado", Toast.LENGTH_SHORT).show();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent i=new Intent(AnadirLibro.this,LibrosActivity.class);
+                                        startActivity(i);
+                                    }
+                                }, 1001);
+                            }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        //nada
+                    }
+                });
+            } //fin extras null
+            else{
+                //Aqui va el codigo para cambiar los datos del libro
+                usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                db = FirebaseDatabase.getInstance();
+                mStorage = FirebaseStorage.getInstance();
+                storageRef = mStorage.getReference();
+                myRef = db.getReference().child("Usuarios").child(usuario).child("Libros");
+                String idLibro = extras.getString("IDlibro");
+
+                String autor = txtAutor.getText().toString();
+                String descripcion = txtDescripcion.getText().toString();
+                String genero = txtGenero.getText().toString();
+                String foto = ""+uri;
+
+                System.out.println("Uri de la foto: "+uri);
+                System.out.println("Id del libro: "+idLibro);
+                storageRef.child("Imagenes").child(usuario).child("Libros").child(idLibro).child("Libro.jpeg").putFile(uri);
+
+
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
 
                             Map<String, Object> hopperUpdates = new HashMap<>();
                             hopperUpdates.put("Foto",foto);
                             hopperUpdates.put("Autor", autor);
                             hopperUpdates.put("Descripcion",descripcion);
                             hopperUpdates.put("Genero",genero);
-                            hopperUpdates.put("Valoracion","0");
-                            hopperUpdates.put("Id",id);
 
-                            myRef.child(id).setValue(hopperUpdates);
-                            storageRef.child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg").putFile(uri);
-                            Toast.makeText(AnadirLibro.this, "Libro creado", Toast.LENGTH_SHORT).show();
-                        }else{
-                            Map<String, Object> hopperUpdates = new HashMap<>();
-                            hopperUpdates.put("Foto",foto);
-                            hopperUpdates.put("Autor", autor);
-                            hopperUpdates.put("Descripcion",descripcion);
-                            hopperUpdates.put("Genero",genero);
-                            hopperUpdates.put("Valoracion","0");
-                            hopperUpdates.put("Id",id);
+                            myRef.child(idLibro).updateChildren(hopperUpdates);
+                            Toast.makeText(AnadirLibro.this, "Libro modificado", Toast.LENGTH_SHORT).show();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent i=new Intent(AnadirLibro.this,LibrosActivity.class);
+                                    startActivity(i);
+                                }
+                            }, 1001);
+                    }
 
-                            myRef.child(id).setValue(hopperUpdates);
-                            storageRef.child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg").putFile(uri);
-                            Toast.makeText(AnadirLibro.this, "Libro creado", Toast.LENGTH_SHORT).show();
-
-                        }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    //nada
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        //nada
+                    }
+                });
+            }
 
         }); //fin añadirLibro
 
@@ -175,8 +260,44 @@ public class AnadirLibro extends AppCompatActivity {
                     });
             AlertDialog dialog = builder.create();
             dialog.show();
+        }); //fin foto setonclicklistener
+    }  //fin onCreate
+
+
+    public void cargarImagen(String idLibro){
+        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseStorage mStorage = FirebaseStorage.getInstance();
+        StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Libros").child(idLibro).child("Libro.jpeg");
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(AnadirLibro.this)
+                        .load(uri)
+                        .fitCenter()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                        .into(foto);
+            }
         });
-    } //fin foto setonclicklistener
+    }
+
+    public void cargarDatos(String idLibro){
+        myRef = db.getReference().child("Usuarios").child(usuario).child("Libros").child(idLibro);
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Libros datosLibro = snapshot.getValue(Libros.class);
+                txtAutor.setText(datosLibro.Autor);
+                txtDescripcion.setText(datosLibro.Descripcion);
+                txtGenero.setText(datosLibro.Genero);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

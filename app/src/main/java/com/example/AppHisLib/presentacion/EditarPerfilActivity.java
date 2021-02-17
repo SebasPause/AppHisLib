@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -65,6 +68,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,20 +86,11 @@ public class EditarPerfilActivity extends AppCompatActivity {
         btnGuardarDatosPerfil = (Button)findViewById(R.id.btnGuardarDatosPerfil);
         imgEditarPerfil = (ImageView)findViewById(R.id.imgEditarPerfil);
 
+        imgEditarPerfil.setOnClickListener(onClickListener);
+
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mStorage = FirebaseStorage.getInstance();
-        storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
-        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(EditarPerfilActivity.this)
-                        .load(uri)
-                        .fitCenter()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
-                        .into(imgEditarPerfil);
-            }
-        });
+        downloadSetImage();
         uri = Uri.parse(imgEditarPerfil.toString());
         myRef = db.getReference().child("Usuarios").child(usuario).child("Perfil");
         myRef.addValueEventListener(new ValueEventListener() {
@@ -113,10 +108,6 @@ public class EditarPerfilActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
         btnGuardarDatosPerfil.setOnClickListener(v -> {
             usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
             myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
@@ -131,10 +122,6 @@ public class EditarPerfilActivity extends AppCompatActivity {
                         + '/' + EditarPerfilActivity.this.getResources().getResourceEntryName(R.drawable.ic_person)
                 );
             }
-            System.out.println("Aqui esta la uri al guardar: "+uri);
-            mStorage = FirebaseStorage.getInstance();
-            storageRef = mStorage.getReference();
-            storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(uri);
 
             Map<String, Object> hopperUpdates = new HashMap<>();
             hopperUpdates.put("Foto",foto);
@@ -143,15 +130,38 @@ public class EditarPerfilActivity extends AppCompatActivity {
             hopperUpdates.put("Edad",edad);
 
             myRef.child(usuario).child("Perfil").updateChildren(hopperUpdates);
+
+            mStorage = FirebaseStorage.getInstance();
+            storageRef = mStorage.getReference();
+            storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(uri);
+
             Toast.makeText(this, "Datos modificados correctamente", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(EditarPerfilActivity.this,PerfilActivity.class);
-            startActivity(intent);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent i=new Intent(EditarPerfilActivity.this,PerfilActivity.class);
+                    startActivity(i);
+                }
+            }, 1001);
+
         });
 
 
-        imgEditarPerfil.setOnClickListener(onClickListener);
+    }
 
-
+    public void downloadSetImage(){
+        mStorage = FirebaseStorage.getInstance();
+        storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(EditarPerfilActivity.this)
+                        .load(uri)
+                        .fitCenter()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                        .into(imgEditarPerfil);
+            }
+        });
     }
 
     //Para volver atras

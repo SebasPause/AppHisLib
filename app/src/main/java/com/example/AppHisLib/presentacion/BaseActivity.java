@@ -28,7 +28,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
 
         btnNavegacion.setOnNavigationItemSelectedListener(this);
 
-
     }
 
 
@@ -37,11 +36,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
         super.onStart();
         updateNavigationBarState();
         overridePendingTransition(0, 0);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     @Override
