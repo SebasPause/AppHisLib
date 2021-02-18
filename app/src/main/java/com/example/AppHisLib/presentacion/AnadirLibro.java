@@ -140,6 +140,9 @@ public class AnadirLibro extends AppCompatActivity {
                                 int nrAleatorio =(int) (Math.random()*1000+1);
                                 id = usuario+nrAleatorio;
 
+                                Map<String, Object> paginas = new HashMap<>();
+                                paginas.put("1","");
+
                                 Map<String, Object> hopperUpdates = new HashMap<>();
                                 hopperUpdates.put("Foto",foto);
                                 hopperUpdates.put("Autor", autor);
@@ -148,11 +151,16 @@ public class AnadirLibro extends AppCompatActivity {
                                 hopperUpdates.put("Valoracion","0");
                                 hopperUpdates.put("Id",id);
                                 hopperUpdates.put("Publicado",false);
+                                hopperUpdates.put("Paginas","");
 
                                 myRef.child(id).setValue(hopperUpdates);
+                                myRef.child(id).child("Paginas").setValue(paginas);
                                 storageRef.child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg").putFile(uri);
                                 Toast.makeText(AnadirLibro.this, "Libro creado", Toast.LENGTH_SHORT).show();
                             }else{
+                                Map<String, Object> paginas = new HashMap<>();
+                                paginas.put("1","");
+
                                 Map<String, Object> hopperUpdates = new HashMap<>();
                                 hopperUpdates.put("Foto",foto);
                                 hopperUpdates.put("Autor", autor);
@@ -161,8 +169,10 @@ public class AnadirLibro extends AppCompatActivity {
                                 hopperUpdates.put("Valoracion","0");
                                 hopperUpdates.put("Id",id);
                                 hopperUpdates.put("Publicado",false);
+                                hopperUpdates.put("Paginas","");
 
                                 myRef.child(id).setValue(hopperUpdates);
+                                myRef.child(id).child("Paginas").setValue(paginas);
                                 storageRef.child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg").putFile(uri);
                                 Toast.makeText(AnadirLibro.this, "Libro creado", Toast.LENGTH_SHORT).show();
                                 new Handler().postDelayed(new Runnable() {

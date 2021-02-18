@@ -129,6 +129,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                 }
                 else if(which == 1){
                     Intent intent = new Intent(contexto, EscribirLibroActivity.class);
+                    intent.putExtra("IDLibro",id);
                     contexto.startActivity(intent);
                 }
                 else if(which == 2){
