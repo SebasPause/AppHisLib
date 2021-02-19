@@ -26,10 +26,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContentMainActivity extends BaseActivity {
+public class ContentMainActivity extends BaseActivity implements Serializable{
 
     private String usuario;
     DatabaseReference myRef,myRef2;
@@ -61,19 +62,14 @@ public class ContentMainActivity extends BaseActivity {
         if(extras==null){
             //nada
             accion = false;
-            librosPublicados = findViewById(R.id.rvListaLibrosPublicados);
-            librosPublicados.setLayoutManager(layoutManager2);
-            librosPublicados.setHasFixedSize(true);
-            librosPublicados.setAdapter(adapter2);
-            accion=false;
+            System.out.println("Si extra es null: "+listaLibrosPublicados.size());
         }else{
             accion = extras.getBoolean("Accion");
         }
-
         if(accion){
             extras = getIntent().getExtras();
             listaLibrosPublicados = (List<Libros>) extras.getSerializable("ListaLibrosPublicados");
-            System.out.println("Size del adaptador"+listaLibrosPublicados.size());
+            System.out.println("Si extra es true: "+listaLibrosPublicados.size());
 
             librosPublicados = findViewById(R.id.rvListaLibrosPublicados);
             adapter2 = new AdaptadorLibrosPublicados(ContentMainActivity.this,listaLibrosPublicados);
@@ -98,14 +94,17 @@ public class ContentMainActivity extends BaseActivity {
             Intent intent;
             if(itemId == R.id.irPerfil){
                 intent = new Intent(this, PerfilActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
                 startActivity(intent);
             }
             if(itemId == R.id.irPrincipal){
                 intent = new Intent(this,ContentMainActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
                 startActivity(intent);
             }
             if(itemId == R.id.irLibros){
                 intent = new Intent(this, LibrosActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
                 startActivity(intent);
             }
             finish();

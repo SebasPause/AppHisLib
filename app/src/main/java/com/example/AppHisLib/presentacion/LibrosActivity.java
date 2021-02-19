@@ -24,10 +24,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LibrosActivity extends BaseActivity {
+public class LibrosActivity extends BaseActivity implements Serializable {
 
     FloatingActionButton anadirLibro;
     BottomNavigationView btnNavegacion;
@@ -37,12 +38,20 @@ public class LibrosActivity extends BaseActivity {
     RecyclerView.LayoutManager layoutManager;
     private String usuario;
     DatabaseReference myRef;
+    List<Libros> listaLibrosPublicados;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.libros);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras == null){
+            //nada
+        }else{
+            listaLibrosPublicados = (List<Libros>) extras.getSerializable("ListaLibrosPublicados");
+        }
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Libros");
@@ -157,14 +166,20 @@ public class LibrosActivity extends BaseActivity {
             Intent intent;
             if(itemId == R.id.irPerfil){
                 intent = new Intent(this, PerfilActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             if(itemId == R.id.irPrincipal){
                 intent = new Intent(this, ContentMainActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             if(itemId == R.id.irLibros){
                 intent = new Intent(this,LibrosActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             finish();
