@@ -24,11 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
-import com.example.AppHisLib.presentacion.AnadirLibro;
-import com.example.AppHisLib.presentacion.EditarPerfilActivity;
+import com.example.AppHisLib.presentacion.AnadirLibroActivity;
 import com.example.AppHisLib.presentacion.EscribirLibroActivity;
 import com.example.AppHisLib.presentacion.LibrosActivity;
-import com.example.AppHisLib.presentacion.PerfilActivity;
+import com.example.AppHisLib.presentacion.VerLibroActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,8 +38,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -103,6 +100,21 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
         });
 
 
+        //Si clicko en un libro
+        holder.itemView.setOnClickListener(v -> {
+            cargarPaginas(id);
+            Toast.makeText(contexto, "Cargando Libro", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent i=new Intent(contexto, VerLibroActivity.class);
+                    i.putExtra("Paginas",contenidoPagina);
+                    i.putExtra("IdLibro",id);
+                    contexto.startActivity(i);
+                }
+            }, 2000);
+            holder.itemView.setEnabled(false);
+        });
 
         //Para la imagen de opciones
         holder.imagenOpciones.setOnClickListener(v -> {
@@ -122,18 +134,17 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
             public void onClick(DialogInterface dialog, int which) {
                 //Primera opcion es 0
                 if(which == 0){
-                    //Para ir a editar una persona
-                    /*Intent intent = new Intent(contexto, EditarLibroActivity.class);
-                    intent.putExtra("id",idFinal);
-                    intent.putExtra("nombre",nombre);
-                    intent.putExtra("apellidos",apellidos);
-                    intent.putExtra("edad",edad);
-                    intent.putExtra("telefono",telefono);
-                    intent.putExtra("correo",correo);
-                    intent.putExtra("foto",foto);
-                    intent.putExtra("REQUISITO_EDITAR",true);
-                    contexto.startActivity(intent);
-                    */
+                    cargarPaginas(id);
+                    Toast.makeText(contexto, "Cargando Libro", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent i=new Intent(contexto, VerLibroActivity.class);
+                            i.putExtra("Paginas",contenidoPagina);
+                            i.putExtra("IdLibro",id);
+                            contexto.startActivity(i);
+                        }
+                    }, 2000);
                 }
                 else if(which == 1){
                     cargarPaginas(id);
@@ -150,7 +161,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                     }, 2000);
                 }
                 else if(which == 2){
-                    Intent intent = new Intent(contexto, AnadirLibro.class);
+                    Intent intent = new Intent(contexto, AnadirLibroActivity.class);
                     intent.putExtra("EditarLibro",true);
                     intent.putExtra("IDlibro",id);
                     contexto.startActivity(intent);
@@ -165,8 +176,9 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                                 public void onClick(DialogInterface dialog, int which) {
                                     usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                     CrearEstructura ce = new CrearEstructura(contexto,usuario,myRef);
-                                    ce.publicarLibro(id,usuario,uri);
+                                    ce.publicarLibro(id,usuario);
                                     ((LibrosActivity)contexto).onResume();
+                                    Toast.makeText(contexto, "Libro Publicado", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton("No",null);

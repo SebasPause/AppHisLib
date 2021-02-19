@@ -3,9 +3,8 @@ package com.example.AppHisLib.presentacion;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.AdaptadorListaLibros;
 import com.example.AppHisLib.casosdeuso.Libros;
-import com.example.AppHisLib.casosdeuso.ListaLibros;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,10 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class LibrosActivity extends BaseActivity {
 
@@ -56,7 +51,7 @@ public class LibrosActivity extends BaseActivity {
         btnNavegacion = findViewById(R.id.btnNavegacion);
 
         anadirLibro.setOnClickListener(v -> {
-            Intent intent = new Intent(LibrosActivity.this,AnadirLibro.class);
+            Intent intent = new Intent(LibrosActivity.this, AnadirLibroActivity.class);
             startActivity(intent);
         });
 

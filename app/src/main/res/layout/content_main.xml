@@ -7,16 +7,14 @@
     android:orientation="vertical">
 
 
-    <ListView
-        android:id="@android:id/list"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvListaLibrosPublicados"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawSelectorOnTop="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-
-    </ListView>
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:paddingBottom="80dp"
+        android:clipToPadding="false"
+        tools:listitem="@layout/lista_libros_publicados"/>
 
     <include
         layout="@layout/item_bottom_navigation"

@@ -19,7 +19,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -28,7 +27,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.Libros;
-import com.google.android.gms.common.util.JsonUtils;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,10 +42,13 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-public class AnadirLibro extends AppCompatActivity {
+public class AnadirLibroActivity extends AppCompatActivity {
 
     private String usuario;
     private String id;
@@ -140,6 +141,8 @@ public class AnadirLibro extends AppCompatActivity {
                                 int nrAleatorio =(int) (Math.random()*1000+1);
                                 id = usuario+nrAleatorio;
 
+                                String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+
                                 Map<String, Object> paginas = new HashMap<>();
                                 paginas.put("1","");
 
@@ -148,15 +151,16 @@ public class AnadirLibro extends AppCompatActivity {
                                 hopperUpdates.put("Autor", autor);
                                 hopperUpdates.put("Descripcion",descripcion);
                                 hopperUpdates.put("Genero",genero);
-                                hopperUpdates.put("Valoracion","0");
+                                hopperUpdates.put("Valoracion",0.0f);
                                 hopperUpdates.put("Id",id);
                                 hopperUpdates.put("Publicado",false);
+                                hopperUpdates.put("FechaPublicado",currentDate);
                                 hopperUpdates.put("Paginas","");
 
                                 myRef.child(id).setValue(hopperUpdates);
                                 myRef.child(id).child("Paginas").setValue(paginas);
                                 storageRef.child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg").putFile(uri);
-                                Toast.makeText(AnadirLibro.this, "Libro creado", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AnadirLibroActivity.this, "Libro creado", Toast.LENGTH_SHORT).show();
                             }else{
                                 Map<String, Object> paginas = new HashMap<>();
                                 paginas.put("1","");
@@ -174,11 +178,11 @@ public class AnadirLibro extends AppCompatActivity {
                                 myRef.child(id).setValue(hopperUpdates);
                                 myRef.child(id).child("Paginas").setValue(paginas);
                                 storageRef.child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg").putFile(uri);
-                                Toast.makeText(AnadirLibro.this, "Libro creado", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AnadirLibroActivity.this, "Libro creado", Toast.LENGTH_SHORT).show();
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Intent i=new Intent(AnadirLibro.this,LibrosActivity.class);
+                                        Intent i=new Intent(AnadirLibroActivity.this,LibrosActivity.class);
                                         startActivity(i);
                                     }
                                 }, 1001);
@@ -221,11 +225,11 @@ public class AnadirLibro extends AppCompatActivity {
                             hopperUpdates.put("Genero",genero);
 
                             myRef.child(idLibro).updateChildren(hopperUpdates);
-                            Toast.makeText(AnadirLibro.this, "Libro modificado", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AnadirLibroActivity.this, "Libro modificado", Toast.LENGTH_SHORT).show();
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Intent i=new Intent(AnadirLibro.this,LibrosActivity.class);
+                                    Intent i=new Intent(AnadirLibroActivity.this,LibrosActivity.class);
                                     startActivity(i);
                                 }
                             }, 1001);
@@ -242,17 +246,17 @@ public class AnadirLibro extends AppCompatActivity {
 
 
         imgAnadirLibro.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(AnadirLibro.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(AnadirLibroActivity.this);
             builder.setMessage("Elige una opcion")
                     .setPositiveButton("CAMARA", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //Compruebo si tiene permisos
-                            if(ActivityCompat.checkSelfPermission(AnadirLibro.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+                            if(ActivityCompat.checkSelfPermission(AnadirLibroActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
                                 irCamara();
                             }else{
                                 //Si no tiene permisos uso el requestPermissions
-                                ActivityCompat.requestPermissions(AnadirLibro.this,new String[]{Manifest.permission.CAMERA},REQUEST_PERMISION_CAMERA);
+                                ActivityCompat.requestPermissions(AnadirLibroActivity.this,new String[]{Manifest.permission.CAMERA},REQUEST_PERMISION_CAMERA);
                             }
                         }
                     })
@@ -260,11 +264,11 @@ public class AnadirLibro extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //compruebo si tiene permisos de acceder a los archivos
-                            if(ActivityCompat.checkSelfPermission(AnadirLibro.this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                            if(ActivityCompat.checkSelfPermission(AnadirLibroActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
                                 irGaleria();
                             }else{
                                 //Pido los permisos
-                                ActivityCompat.requestPermissions(AnadirLibro.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},REQUEST_PERMISION_EXTERNAL_STORAGE);
+                                ActivityCompat.requestPermissions(AnadirLibroActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},REQUEST_PERMISION_EXTERNAL_STORAGE);
                             }
                         }
                     });
@@ -281,7 +285,7 @@ public class AnadirLibro extends AppCompatActivity {
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Glide.with(AnadirLibro.this)
+                Glide.with(AnadirLibroActivity.this)
                         .load(uri)
                         .fitCenter()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
