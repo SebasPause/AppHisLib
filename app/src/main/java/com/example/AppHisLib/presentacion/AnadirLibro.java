@@ -198,7 +198,6 @@ public class AnadirLibro extends AppCompatActivity {
                 System.out.println("Id del libro: "+idLibro);
                 storageRef.child("Imagenes").child(usuario).child("Libros").child(idLibro).child("Libro.jpeg").putFile(uri);
 
-
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
