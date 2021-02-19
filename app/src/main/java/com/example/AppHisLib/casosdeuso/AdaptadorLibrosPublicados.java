@@ -30,31 +30,32 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
     private Context contexto;
     private String usuario;
     DatabaseReference myRef;
-    List<Libros> libros;
+    List<Libros> librosPublicados;
     Uri uri;
 
 
-    public AdaptadorLibrosPublicados(Context contexto, List<Libros> libros){
+    public AdaptadorLibrosPublicados(Context contexto, List<Libros> librosPublicados){
         this.contexto = contexto;
-        this.libros = libros;
+        this.librosPublicados = librosPublicados;
     }
 
     @NonNull
     @Override
     public LibrosPublicadosViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(contexto).inflate(R.layout.lista_libros,parent,false);
+        View v = LayoutInflater.from(contexto).inflate(R.layout.lista_libros_publicados,parent,false);
         AdaptadorLibrosPublicados.LibrosPublicadosViewHolder librospublicadosViewHolder = new AdaptadorLibrosPublicados.LibrosPublicadosViewHolder(v);
         return librospublicadosViewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull LibrosPublicadosViewHolder holder, int position) {
-        String autor = libros.get(position).Autor;
-        String descripcion = libros.get(position).Descripcion;
-        String genero = libros.get(position).Genero;
-        String foto = libros.get(position).Foto;
-        String valoracion = libros.get(position).Valoracion;
-        String id = libros.get(position).Id;
+        String autor = librosPublicados.get(position).Autor;
+        String descripcion = librosPublicados.get(position).Descripcion;
+        String genero = librosPublicados.get(position).Genero;
+        String foto = librosPublicados.get(position).Foto;
+        String valoracion = librosPublicados.get(position).Valoracion;
+        String id = librosPublicados.get(position).Id;
+        String fechaPublicado = librosPublicados.get(position).FechaPublicado;
 
         uri = Uri.parse(foto);
 
@@ -63,6 +64,7 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
         holder.txtGenero.setText(genero);
         holder.imagenListaLibros.setImageURI(uri);
         holder.ratingBar.setRating(Float.parseFloat(valoracion));
+        holder.txtFechaPublicado.setText(fechaPublicado);
 
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseStorage mStorage = FirebaseStorage.getInstance();
@@ -81,7 +83,7 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
 
     @Override
     public int getItemCount() {
-        return libros.size();
+        return librosPublicados.size();
     }
 
     @Override
@@ -90,24 +92,23 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
     }
 
     public class LibrosPublicadosViewHolder extends  RecyclerView.ViewHolder{
-        CardView cvListaLibros;
+        CardView cvListaLibrosPublicados;
         ImageButton imagenOpciones;
         RatingBar ratingBar;
         ImageView imagenListaLibros;
-        TextView txtAutor, txtDescripcion, txtGenero;
+        TextView txtAutor, txtDescripcion, txtGenero,txtFechaPublicado;
 
 
         public LibrosPublicadosViewHolder(@NonNull View itemView) {
             super(itemView);
-            cvListaLibros = (CardView)itemView.findViewById(R.id.cvListaLibros);
+            cvListaLibrosPublicados = (CardView)itemView.findViewById(R.id.cvListaLibrosPublicados);
             imagenOpciones = (ImageButton)itemView.findViewById(R.id.imagen_opciones);
             ratingBar = (RatingBar)itemView.findViewById(R.id.ratingBar);
             imagenListaLibros = (ImageView)itemView.findViewById(R.id.imgListaLibros);
             txtAutor = (TextView)itemView.findViewById(R.id.txtAutor);
             txtDescripcion = (TextView)itemView.findViewById(R.id.txtDescripcion);
             txtGenero = (TextView)itemView.findViewById(R.id.txtGenero);
-
-
+            txtFechaPublicado = (TextView)itemView.findViewById(R.id.txtFechaPublicado);
         }
     }
 }

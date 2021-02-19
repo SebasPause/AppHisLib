@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.DatosPerfil;
+import com.example.AppHisLib.casosdeuso.Libros;
 import com.google.android.gms.common.util.JsonUtils;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -32,7 +33,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-public class PerfilActivity extends BaseActivity {
+import java.io.Serializable;
+import java.util.List;
+
+public class PerfilActivity extends BaseActivity implements Serializable {
 
     ImageView imgEditarPerfil;
     TextView txtAutor,txtDescripcion;
@@ -44,6 +48,7 @@ public class PerfilActivity extends BaseActivity {
     FirebaseDatabase db;
     Uri uri;
     ActionBar actionBar;
+    List<Libros> listaLibrosPublicados;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -55,6 +60,12 @@ public class PerfilActivity extends BaseActivity {
         actionBar = getSupportActionBar();
         actionBar.setTitle("Perfil");
 
+        Bundle extras = getIntent().getExtras();
+        if(extras == null){
+            //nada
+        }else{
+            listaLibrosPublicados = (List<Libros>) extras.getSerializable("ListaLibrosPublicados");
+        }
 
         txtAutor = (TextView)findViewById(R.id.txtAutor);
         txtDescripcion = (TextView)findViewById(R.id.txtDescripcion);
@@ -148,14 +159,20 @@ public class PerfilActivity extends BaseActivity {
             Intent intent;
             if(itemId == R.id.irPerfil){
                 intent = new Intent(this,PerfilActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             if(itemId == R.id.irPrincipal){
                 intent = new Intent(this, ContentMainActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             if(itemId == R.id.irLibros){
                 intent = new Intent(this, LibrosActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             finish();

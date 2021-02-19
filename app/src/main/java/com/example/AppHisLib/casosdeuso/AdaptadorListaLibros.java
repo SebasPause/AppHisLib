@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
-import com.example.AppHisLib.presentacion.AnadirLibro;
+import com.example.AppHisLib.presentacion.AnadirLibroActivity;
 import com.example.AppHisLib.presentacion.EscribirLibroActivity;
 import com.example.AppHisLib.presentacion.LibrosActivity;
+import com.example.AppHisLib.presentacion.VerLibroActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +38,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,6 +48,10 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
     DatabaseReference myRef;
     List<Libros> libros;
     Uri uri;
+
+    HashMap<String,String> contenidoPagina;
+    FirebaseDatabase db;
+    String nrPagina,texto;
 
 
     public AdaptadorListaLibros(Context contexto, List<Libros> libros){
@@ -95,6 +100,21 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
         });
 
 
+        //Si clicko en un libro
+        holder.itemView.setOnClickListener(v -> {
+            cargarPaginas(id);
+            Toast.makeText(contexto, "Cargando Libro", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent i=new Intent(contexto, VerLibroActivity.class);
+                    i.putExtra("Paginas",contenidoPagina);
+                    i.putExtra("IdLibro",id);
+                    contexto.startActivity(i);
+                }
+            }, 2000);
+            holder.itemView.setEnabled(false);
+        });
 
         //Para la imagen de opciones
         holder.imagenOpciones.setOnClickListener(v -> {
@@ -114,26 +134,34 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
             public void onClick(DialogInterface dialog, int which) {
                 //Primera opcion es 0
                 if(which == 0){
-                    //Para ir a editar una persona
-                    /*Intent intent = new Intent(contexto, EditarLibroActivity.class);
-                    intent.putExtra("id",idFinal);
-                    intent.putExtra("nombre",nombre);
-                    intent.putExtra("apellidos",apellidos);
-                    intent.putExtra("edad",edad);
-                    intent.putExtra("telefono",telefono);
-                    intent.putExtra("correo",correo);
-                    intent.putExtra("foto",foto);
-                    intent.putExtra("REQUISITO_EDITAR",true);
-                    contexto.startActivity(intent);
-                    */
+                    cargarPaginas(id);
+                    Toast.makeText(contexto, "Cargando Libro", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent i=new Intent(contexto, VerLibroActivity.class);
+                            i.putExtra("Paginas",contenidoPagina);
+                            i.putExtra("IdLibro",id);
+                            contexto.startActivity(i);
+                        }
+                    }, 2000);
                 }
                 else if(which == 1){
-                    Intent intent = new Intent(contexto, EscribirLibroActivity.class);
-                    intent.putExtra("IDlibro",id);
-                    contexto.startActivity(intent);
+                    cargarPaginas(id);
+                    Toast.makeText(contexto, "Cargando Libro", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent i=new Intent(contexto, EscribirLibroActivity.class);
+                            i.putExtra("Paginas",contenidoPagina);
+                            i.putExtra("IdLibro",id);
+                            i.putExtra("NuevaPagina",false);
+                            contexto.startActivity(i);
+                        }
+                    }, 2000);
                 }
                 else if(which == 2){
-                    Intent intent = new Intent(contexto, AnadirLibro.class);
+                    Intent intent = new Intent(contexto, AnadirLibroActivity.class);
                     intent.putExtra("EditarLibro",true);
                     intent.putExtra("IDlibro",id);
                     contexto.startActivity(intent);
@@ -148,8 +176,9 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                                 public void onClick(DialogInterface dialog, int which) {
                                     usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                     CrearEstructura ce = new CrearEstructura(contexto,usuario,myRef);
-                                    ce.publicarLibro(id,usuario,uri);
+                                    ce.publicarLibro(id,usuario);
                                     ((LibrosActivity)contexto).onResume();
+                                    Toast.makeText(contexto, "Libro Publicado", Toast.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton("No",null);
@@ -178,6 +207,32 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
         builder.create().show();
 
     }
+
+    public HashMap<String,String> cargarPaginas(String idLibro){
+        db = FirebaseDatabase.getInstance();
+        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        myRef = db.getReference().child("Usuarios").child(usuario).child("Libros").child(idLibro).child("Paginas");
+        contenidoPagina = new HashMap<>();
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds : snapshot.getChildren()){
+                    nrPagina = ds.getKey();
+                    texto = ds.getValue(String.class);
+                    contenidoPagina.put(nrPagina,texto);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        return contenidoPagina;
+    }
+
 
     @Override
     public int getItemCount() {

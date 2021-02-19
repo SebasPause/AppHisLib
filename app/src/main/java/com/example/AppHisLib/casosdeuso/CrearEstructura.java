@@ -17,13 +17,19 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class CrearEstructura {
     Context contexto;
     private String usuario;
-    private DatabaseReference myRef;
+    private DatabaseReference myRef, myRef2;
+    List<Libros> listaLibrosPublicados;
 
     public CrearEstructura(Context contexto, String usuario, DatabaseReference myRef) {
         this.contexto = contexto;
@@ -31,7 +37,7 @@ public class CrearEstructura {
         this.myRef = myRef;
     }
 
-    public void crearEstructuraDatos(){
+    public void crearEstructuraDatos() {
         myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -39,7 +45,7 @@ public class CrearEstructura {
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.hasChild(usuario)) {
                     // si ya existe el usuario en la base de datos no hay que crear la estructura de datos
-                }else{
+                } else {
                     //Clave principal usuario
                     myRef.child(usuario).setValue(usuario);
                     //Hijo de usuario
@@ -50,13 +56,6 @@ public class CrearEstructura {
                     myRef.child(usuario).child("Perfil").child("Edad").setValue("");
                     //Hijo de usuario
                     myRef.child(usuario).child("Libros").setValue("String");
-                    myRef.child(usuario).child("Libros").child("Libro");
-                    myRef.child(usuario).child("Libros").child("Libro").child("Id").setValue("");
-                    myRef.child(usuario).child("Libros").child("Libro").child("Autor").setValue("");
-                    myRef.child(usuario).child("Libros").child("Libro").child("Descripcion").setValue("");
-                    myRef.child(usuario).child("Libros").child("Libro").child("Genero").setValue("");
-                    myRef.child(usuario).child("Libros").child("Libro").child("Foto").setValue("");
-                    myRef.child(usuario).child("Libros").child("Libro").child("Valoracion").setValue("");
                 }
             }
 
@@ -69,11 +68,11 @@ public class CrearEstructura {
 
 
     //Metodo para borrar un libro
-    public void borrarLibro(String id,String usuarioEliminar){
+    public void borrarLibro(String id, String usuarioEliminar) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         FirebaseStorage mStorage = FirebaseStorage.getInstance();
         StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuarioEliminar).child("Libros").child(id).child("Libro.jpeg");
-        System.out.println("Referencia de la imagen: "+storageRef);
+        System.out.println("Referencia de la imagen: " + storageRef);
         storageRef.delete();
         myRef = db.getReference().child("Usuarios").child(usuarioEliminar).child("Libros").child(id);
         myRef.removeValue();
@@ -81,30 +80,19 @@ public class CrearEstructura {
 
     }
 
-    public void publicarLibro(String id, String usuarioLibro, Uri uri){
+    public void publicarLibro(String id, String usuarioLibro) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-        myRef = db.getReference().child("Usuarios").child(usuarioLibro).child("Libros").child(id);
+        myRef = db.getReference().child("Usuarios").child(usuarioLibro).child("Libros");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Libros datosLibro = snapshot.getValue(Libros.class);
-                String autor = datosLibro.Autor;
-                String descripcion = datosLibro.Descripcion;
-                String genero = datosLibro.Genero;
-                String foto = ""+uri;
-                String valoracion = datosLibro.Valoracion;
+                String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
 
                 Map<String, Object> hopperUpdates = new HashMap<>();
-                hopperUpdates.put("Foto",foto);
-                hopperUpdates.put("Autor", autor);
-                hopperUpdates.put("Descripcion",descripcion);
-                hopperUpdates.put("Genero",genero);
-                hopperUpdates.put("Valoracion",valoracion);
-
-                myRef = db.getReference().child("LibrosPublicados");
-                myRef.child(id).setValue(hopperUpdates);
-
+                hopperUpdates.put("Publicado", true);
+                hopperUpdates.put("FechaPublicado", currentDate);
+                myRef.child(id).updateChildren(hopperUpdates);
             }
 
             @Override
@@ -112,8 +100,60 @@ public class CrearEstructura {
 
             }
         });
+    } //fin publicarLibro
 
 
+    public List<Libros> cargarLibrosPublicados() {
+        listaLibrosPublicados = new ArrayList<>();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
+        myRef2 = FirebaseDatabase.getInstance().getReference("Usuarios");
+        myRef = db.getReference().child("Usuarios");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    myRef2 = myRef2.child(ds.getKey()).child("Libros");
+                    myRef2.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot ds2 : snapshot.getChildren()) {
+                                System.out.println("Referencia: " + myRef2);
+                                System.out.println("Publicado: " + ds2.child("Publicado").getValue(Boolean.class));
+                                boolean publicado = ds2.child("Publicado").getValue(Boolean.class);
+                                if (publicado) {
+                                    //se insertara en la lista de libros
+                                    String autor = ds2.child("Autor").getValue(String.class);
+                                    String descripcion = ds2.child("Descripcion").getValue(String.class);
+                                    String foto = ds2.child("Foto").getValue(String.class);
+                                    String genero = ds2.child("Genero").getValue(String.class);
+                                    String Id = ds2.child("Id").getValue(String.class);
+                                    String valoracion = ds2.child("Valoracion").getValue(String.class);
+                                    String FechaPublicado = ds2.child("FechaPublicado").getValue(String.class);
+                                    Libros libro = new Libros(autor, descripcion, genero, foto, valoracion, Id, FechaPublicado);
+
+                                    listaLibrosPublicados.add(libro);
+                                } else {
+                                    //no esta publicado
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return listaLibrosPublicados;
     }
+
 
 }

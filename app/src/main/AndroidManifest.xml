@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppHisLib">
         <activity android:name=".presentacion.EscribirLibroActivity"></activity>
-        <activity android:name=".presentacion.AnadirLibro" />
+        <activity android:name=".presentacion.AnadirLibroActivity" />
         <activity android:name=".presentacion.BaseActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

@@ -3,9 +3,8 @@ package com.example.AppHisLib.presentacion;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.AdaptadorListaLibros;
 import com.example.AppHisLib.casosdeuso.Libros;
-import com.example.AppHisLib.casosdeuso.ListaLibros;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,13 +24,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class LibrosActivity extends BaseActivity {
+public class LibrosActivity extends BaseActivity implements Serializable {
 
     FloatingActionButton anadirLibro;
     BottomNavigationView btnNavegacion;
@@ -42,12 +38,20 @@ public class LibrosActivity extends BaseActivity {
     RecyclerView.LayoutManager layoutManager;
     private String usuario;
     DatabaseReference myRef;
+    List<Libros> listaLibrosPublicados;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.libros);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras == null){
+            //nada
+        }else{
+            listaLibrosPublicados = (List<Libros>) extras.getSerializable("ListaLibrosPublicados");
+        }
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Libros");
@@ -56,7 +60,7 @@ public class LibrosActivity extends BaseActivity {
         btnNavegacion = findViewById(R.id.btnNavegacion);
 
         anadirLibro.setOnClickListener(v -> {
-            Intent intent = new Intent(LibrosActivity.this,AnadirLibro.class);
+            Intent intent = new Intent(LibrosActivity.this, AnadirLibroActivity.class);
             startActivity(intent);
         });
 
@@ -162,14 +166,20 @@ public class LibrosActivity extends BaseActivity {
             Intent intent;
             if(itemId == R.id.irPerfil){
                 intent = new Intent(this, PerfilActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             if(itemId == R.id.irPrincipal){
                 intent = new Intent(this, ContentMainActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             if(itemId == R.id.irLibros){
                 intent = new Intent(this,LibrosActivity.class);
+                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             finish();
