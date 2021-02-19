@@ -86,19 +86,27 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
         holder.ratingBar.setRating(Float.parseFloat(valoracion));
 
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseStorage mStorage = FirebaseStorage.getInstance();
-        StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg");
-        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(contexto)
-                        .load(uri)
-                        .fitCenter()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
-                        .into(holder.imagenListaLibros);
-            }
-        });
 
+        char charFoto = foto.charAt(0);
+        String letra = String.valueOf(charFoto);
+
+        if(letra.equals("a")){
+            holder.imagenListaLibros.setImageURI(uri);
+        }else{
+            FirebaseStorage mStorage = FirebaseStorage.getInstance();
+            StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg");
+            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(contexto)
+                            .load(uri)
+                            .fitCenter()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                            .into(holder.imagenListaLibros);
+                }
+            });
+
+        }
 
         //Si clicko en un libro
         holder.itemView.setOnClickListener(v -> {
@@ -164,6 +172,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                     Intent intent = new Intent(contexto, AnadirLibroActivity.class);
                     intent.putExtra("EditarLibro",true);
                     intent.putExtra("IDlibro",id);
+                    intent.putExtra("AnadirLibro",false);
                     contexto.startActivity(intent);
                 }
                 else if(which == 3){

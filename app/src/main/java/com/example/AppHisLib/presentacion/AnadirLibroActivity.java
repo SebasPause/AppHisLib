@@ -42,9 +42,11 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -61,6 +63,7 @@ public class AnadirLibroActivity extends AppCompatActivity {
     EditText txtAutor,txtDescripcion,txtGenero;
     ImageView imgAnadirLibro;
     Uri uri;
+    List<Libros> listaLibrosPublicados;
 
     //Para la foto del libro
     private static final int REQUEST_PERMISION_CAMERA = 1;
@@ -84,12 +87,13 @@ public class AnadirLibroActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance();
 
         Bundle extras = getIntent().getExtras();
-        if(extras == null){
+        if(extras.getBoolean("AnadirLibro")){
             //nada
             actionBar = getSupportActionBar();
             actionBar.setTitle("Añadir Libro");
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
+            listaLibrosPublicados = (List<Libros>) extras.getSerializable("ListaLibrosPublicados");
         }else{
             actionBar = getSupportActionBar();
             actionBar.setTitle("Editar Libro");
@@ -97,6 +101,7 @@ public class AnadirLibroActivity extends AppCompatActivity {
             actionBar.setDisplayShowHomeEnabled(true);
             cargarDatos(extras.getString("IDlibro"));
             cargarImagen(extras.getString("IDlibro"));
+            listaLibrosPublicados = (List<Libros>) extras.getSerializable("ListaLibrosPublicados");
         }
 
         if(uri==null){
@@ -115,8 +120,7 @@ public class AnadirLibroActivity extends AppCompatActivity {
 
 
         anadirLibro.setOnClickListener(v -> {
-
-            if(extras == null){
+            if(extras.getBoolean("AnadirLibro")){
                 usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 db = FirebaseDatabase.getInstance();
                 myRef = db.getReference().child("Usuarios").child(usuario).child("Libros");
@@ -183,6 +187,8 @@ public class AnadirLibroActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         Intent i=new Intent(AnadirLibroActivity.this,LibrosActivity.class);
+                                        i.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                                        i.putExtra("Accion",true);
                                         startActivity(i);
                                     }
                                 }, 1001);
@@ -230,6 +236,8 @@ public class AnadirLibroActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     Intent i=new Intent(AnadirLibroActivity.this,LibrosActivity.class);
+                                    i.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                                    i.putExtra("Accion",true);
                                     startActivity(i);
                                 }
                             }, 1001);

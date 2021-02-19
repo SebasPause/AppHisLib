@@ -148,6 +148,7 @@ public class PerfilActivity extends BaseActivity implements Serializable {
 
     private void lanzarEditarPerfil(View view) {
         Intent intent = new Intent(this, EditarPerfilActivity.class);
+        intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
         startActivity(intent);
     }
 

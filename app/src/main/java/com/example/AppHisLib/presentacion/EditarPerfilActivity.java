@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.DatosPerfil;
+import com.example.AppHisLib.casosdeuso.Libros;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +46,9 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EditarPerfilActivity extends AppCompatActivity {
@@ -59,6 +62,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
     Button btnGuardarDatosPerfil;
     private String usuario;
     Uri uri;
+    List<Libros> listaLibrosPublicados;
 
     //Para la foto de perfil
     private static final int REQUEST_PERMISION_CAMERA = 1;
@@ -79,6 +83,14 @@ public class EditarPerfilActivity extends AppCompatActivity {
         actionBar.setTitle("Editar Perfil");
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
+
+
+        Bundle extras = getIntent().getExtras();
+        if(extras == null){
+            //nada
+        }else{
+            listaLibrosPublicados = (List<Libros>) extras.getSerializable("ListaLibrosPublicados");
+        }
 
         txtAutor = (EditText)findViewById(R.id.txtAutor);
         txtDescripcion = (EditText)findViewById(R.id.txtDescripcion);
@@ -140,6 +152,8 @@ public class EditarPerfilActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     Intent i=new Intent(EditarPerfilActivity.this,PerfilActivity.class);
+                    i.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+                    i.putExtra("Accion",true);
                     startActivity(i);
                 }
             }, 2000);

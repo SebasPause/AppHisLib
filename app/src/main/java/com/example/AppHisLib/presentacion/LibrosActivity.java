@@ -61,6 +61,9 @@ public class LibrosActivity extends BaseActivity implements Serializable {
 
         anadirLibro.setOnClickListener(v -> {
             Intent intent = new Intent(LibrosActivity.this, AnadirLibroActivity.class);
+            intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
+            intent.putExtra("AnadirLibro",true);
+            intent.putExtra("Accion",true);
             startActivity(intent);
         });
 
