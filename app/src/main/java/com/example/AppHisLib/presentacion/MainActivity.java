@@ -1,6 +1,8 @@
 package com.example.AppHisLib.presentacion;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -11,11 +13,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.CrearEstructura;
 import com.example.AppHisLib.casosdeuso.Libros;
+import com.example.AppHisLib.datos.LibroBD;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,11 +42,15 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     DatabaseReference myRef,myRef2;
     List<Libros> listaLibrosPublicados;
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+        LibroBD bd = new LibroBD(this);
+        bd.onUpgrade(bd.getWritableDatabase(),1,1);
+        bd.obtenerDatos();
 
         listaLibrosPublicados = new ArrayList<>();
         FirebaseDatabase db = FirebaseDatabase.getInstance();

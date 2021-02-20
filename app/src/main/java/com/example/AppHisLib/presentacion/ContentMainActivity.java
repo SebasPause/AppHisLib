@@ -18,6 +18,7 @@ import com.example.AppHisLib.casosdeuso.AdaptadorLibrosPublicados;
 import com.example.AppHisLib.casosdeuso.AdaptadorListaLibros;
 import com.example.AppHisLib.casosdeuso.CrearEstructura;
 import com.example.AppHisLib.casosdeuso.Libros;
+import com.example.AppHisLib.datos.LibroBD;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -52,6 +53,11 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Principal");
+
+        LibroBD bd = new LibroBD(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            bd.mostrarUsuarios();
+        }
 
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
