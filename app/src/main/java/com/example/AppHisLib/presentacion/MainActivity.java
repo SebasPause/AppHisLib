@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         setContentView(R.layout.login);
 
         LibroBD bd = new LibroBD(this);
-        bd.onUpgrade(bd.getWritableDatabase(),1,1);
+        bd.onUpgrade(bd.getWritableDatabase(),1,2);
         bd.obtenerDatos();
 
         listaLibrosPublicados = new ArrayList<>();

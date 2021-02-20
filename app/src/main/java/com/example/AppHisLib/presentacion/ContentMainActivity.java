@@ -56,7 +56,7 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
 
         LibroBD bd = new LibroBD(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            bd.mostrarUsuarios();
+            //bd.mostrarUsuarios();
         }
 
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();

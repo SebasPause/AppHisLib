@@ -26,7 +26,7 @@ public class LibroBD extends SQLiteOpenHelper {
 
     private DatabaseReference myRef;
     FirebaseDatabase db;
-    ContentValues valoresUsuarios,valoresPerfil;
+    ContentValues valoresUsuarios,valoresPerfil,valoresLibros;
 
     public LibroBD(@Nullable Context context) {
         super(context, ConstantesBD.BD_NAME, null, 1);
@@ -34,6 +34,8 @@ public class LibroBD extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL(ConstantesBD.CREATE_TABLE_PAGINAS);
+        db.execSQL(ConstantesBD.CREATE_TABLE_LIBROS);
         db.execSQL(ConstantesBD.CREATE_TABLE_PERFIL);
         db.execSQL(ConstantesBD.CREATE_TABLE_USUARIO);
     }
@@ -41,6 +43,8 @@ public class LibroBD extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Volver a crear la tabla
+        db.execSQL("DROP TABLE IF EXISTS " + ConstantesBD.TABLE_NAME_PAGINAS);
+        db.execSQL("DROP TABLE IF EXISTS " + ConstantesBD.TABLE_NAME_LIBROS);
         db.execSQL("DROP TABLE IF EXISTS " + ConstantesBD.TABLE_NAME_PERFIL);
         db.execSQL("DROP TABLE IF EXISTS " + ConstantesBD.TABLE_NAME_USUARIO);
         onCreate(db);
@@ -52,32 +56,6 @@ public class LibroBD extends SQLiteOpenHelper {
         sqDB.execSQL("DELETE FROM "+ConstantesBD.TABLE_NAME_USUARIO);
     }
 
-    public void insertarUsuarios(){
-        System.out.println("He insertado usuarios");
-        db = FirebaseDatabase.getInstance();
-        myRef = db.getReference("Usuarios");
-
-        SQLiteDatabase sqDB = this.getWritableDatabase();
-
-        valoresUsuarios = new ContentValues();
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds : snapshot.getChildren()){
-                    valoresUsuarios.put(ConstantesBD.U_USUARIO,ds.getKey());
-                    System.out.println("Usuario: "+ds.getKey());
-                    sqDB.insert(ConstantesBD.TABLE_NAME_USUARIO,null,valoresUsuarios);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
     public void obtenerDatos(){
         db = FirebaseDatabase.getInstance();
         myRef = db.getReference("Usuarios");
@@ -86,6 +64,7 @@ public class LibroBD extends SQLiteOpenHelper {
 
         valoresUsuarios = new ContentValues();
         valoresPerfil = new ContentValues();
+        valoresLibros = new ContentValues();
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -104,6 +83,11 @@ public class LibroBD extends SQLiteOpenHelper {
                         valoresPerfil.put(ConstantesBD.P_AUTOR,ds.child("Perfil").child("Edad").getValue(String.class));
                         valoresPerfil.put(ConstantesBD.P_AUTOR,ds.child("Perfil").child("Foto").getValue(String.class));
                         sqDB.insert(ConstantesBD.TABLE_NAME_PERFIL,null,valoresPerfil);
+
+                        //Insertar en la tabla libros
+                        //valoresLibros.put();
+
+
                     }
                 }
                 System.out.println("Valores Usuario: "+valoresUsuarios.toString());
@@ -115,32 +99,6 @@ public class LibroBD extends SQLiteOpenHelper {
 
             }
         });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.P)
-    public void mostrarUsuarios(){
-        SQLiteDatabase sqDB = this.getWritableDatabase();
-        System.out.println("Muestro usuarios");
-
-        String query = "SELECT * FROM "+ConstantesBD.TABLE_NAME_USUARIO;
-
-        Cursor cursor;
-        cursor = sqDB.rawQuery(query,null);
-        CursorWindow cursorWindow = new CursorWindow("test",500000000);
-        AbstractWindowedCursor ac = (AbstractWindowedCursor) cursor;
-        ac.setWindow(cursorWindow);
-        ArrayList<String> valoresUsuarios = new ArrayList<>();
-
-        if(cursor.getCount()>0){
-            cursor.moveToFirst();
-            do{
-                valoresUsuarios.add(cursor.getString(cursor.getColumnIndex(ConstantesBD.U_USUARIO)));
-            }while(cursor.moveToNext());
-        }
-        cursor.close();
-
-        System.out.println("Usuarios: "+valoresUsuarios.toString());
-
     }
 
 }

@@ -11,10 +11,13 @@ public class ConstantesBD {
     //Nombre de las tablas
     public static final String TABLE_NAME_USUARIO = "Usuarios";
     public static final String TABLE_NAME_PERFIL = "Perfil";
+    public static final String TABLE_NAME_LIBROS = "Libros";
+    public static final String TABLE_NAME_PAGINAS = "Paginas";
 
     //Nombre de campos de la tabla Usuarios
     public static final String U_USUARIO = "USUARIO";
     public static final String ID_PERFIL = "IDPERFIL";
+    public static final String ID_LIBROS = "IDLIBROS";
 
     //Nombre de campos de la tabla Perfil
     public static final String P_AUTOR = "AUTOR";
@@ -22,11 +25,29 @@ public class ConstantesBD {
     public static final String P_EDAD = "EDAD";
     public static final String P_FOTO = "FOTO";
 
+    //Nombre de campos de la tabla Libros
+    public static final String L_IDENTIFICADOR_LIBRO = "IDENTIFICADOR_LIBRO";
+    public static final String L_AUTOR = "AUTOR";
+    public static final String L_DESCRIPCION = "DESCRIPCION";
+    public static final String L_FOTO = "FOTO";
+    public static final String L_GENERO = "GENERO";
+    public static final String L_PUBLICADO = "PUBLICADO";
+    public static final String L_FECHA_PUBLICADO = "FECHA_PUBLICADO";
+    public static final String L_VALORACION = "VALORACION";
+    public static final String L_ID_PAGINAS = "ID_PAGINAS";
+
+    //Nombre de campos de la tabla Paginas
+    public static final String PA_NUMERO_PAGINA = "NUMERO_PAGINA";
+    public static final String PA_CONTENIDO = "CONTENIDO";
+
+
     //Codigo de creacion de la tabla de Usuario
     public static final String CREATE_TABLE_USUARIO = "CREATE TABLE "+ TABLE_NAME_USUARIO + "("
             + U_USUARIO + " TEXT PRIMARY KEY UNIQUE, "
-            + ID_PERFIL + " int, "
-            + " FOREIGN KEY ("+ID_PERFIL+") REFERENCES "+TABLE_NAME_PERFIL+"("+ID_PERFIL+")"
+            + ID_PERFIL + " TEXT, "
+            + ID_LIBROS + " TEXT, "
+            + " FOREIGN KEY ("+ID_PERFIL+") REFERENCES "+TABLE_NAME_PERFIL+"("+ID_PERFIL+"),"
+            + " FOREIGN KEY ("+ID_LIBROS+") REFERENCES "+TABLE_NAME_LIBROS+"("+ID_LIBROS+")"
             +")";
 
     //Codigo de creacion de la tabla de Perfil
@@ -37,5 +58,28 @@ public class ConstantesBD {
             + P_EDAD + " TEXT, "
             + P_FOTO + " TEXT "
             + ")";
+
+    //Codigo de creacion de la tabla de Libros
+    public static final String CREATE_TABLE_LIBROS = "CREATE TABLE "+ TABLE_NAME_LIBROS + "("
+            + ID_LIBROS + " TEXT PRIMARY KEY UNIQUE, "
+            + L_IDENTIFICADOR_LIBRO + " TEXT, "
+            + L_AUTOR + " TEXT, "
+            + L_DESCRIPCION + " TEXT, "
+            + L_FOTO + " TEXT, "
+            + L_GENERO + " TEXT, "
+            + L_PUBLICADO + " TEXT, "
+            + L_FECHA_PUBLICADO + " TEXT, "
+            + L_VALORACION + " TEXT, "
+            + L_ID_PAGINAS + " TEXT, "
+            + " FOREIGN KEY ("+L_ID_PAGINAS+") REFERENCES "+TABLE_NAME_PAGINAS+"("+L_ID_PAGINAS+")"
+            +")";
+
+    //Codigo de creacion de la tabla de Paginas
+    public static final String CREATE_TABLE_PAGINAS = "CREATE TABLE "+ TABLE_NAME_PAGINAS + "("
+            + L_ID_PAGINAS + " TEXT PRIMARY KEY UNIQUE, "
+            + PA_NUMERO_PAGINA + " TEXT, "
+            + PA_CONTENIDO + " TEXT "
+            + ")";
+
 
 }
