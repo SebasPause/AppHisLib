@@ -43,6 +43,7 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
     RecyclerView.LayoutManager layoutManager2;
     List<Libros> listaLibrosPublicados;
     Boolean accion;
+    List<Libros> listaLibrosPublicados2;
 
     @SuppressLint("RestrictedApi")
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -55,6 +56,13 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
         actionBar.setTitle("Principal");
 
         LibroBD bd = new LibroBD(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            listaLibrosPublicados2 = bd.devolverLibros();
+        }
+        System.out.println("Lista de libros publicados: "+listaLibrosPublicados2.toString());
+        Toast.makeText(this, ""+listaLibrosPublicados2.toString(), Toast.LENGTH_SHORT).show();
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             //bd.mostrarUsuarios();
         }

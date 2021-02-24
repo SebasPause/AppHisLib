@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     private String usuario;
     DatabaseReference myRef,myRef2;
     List<Libros> listaLibrosPublicados;
-    List<Libros> listaLibrosPublicados2;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -52,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         LibroBD bd = new LibroBD(this);
         bd.onUpgrade(bd.getWritableDatabase(),1,2);
         bd.obtenerDatos();
-        //listaLibrosPublicados2 = bd.
 
         listaLibrosPublicados = new ArrayList<>();
         FirebaseDatabase db = FirebaseDatabase.getInstance();

@@ -170,15 +170,19 @@ public class AnadirLibroActivity extends AppCompatActivity {
                                 Map<String, Object> paginas = new HashMap<>();
                                 paginas.put("1","");
 
+                                String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+
                                 Map<String, Object> hopperUpdates = new HashMap<>();
                                 hopperUpdates.put("Foto",foto);
                                 hopperUpdates.put("Autor", autor);
                                 hopperUpdates.put("Descripcion",descripcion);
                                 hopperUpdates.put("Genero",genero);
-                                hopperUpdates.put("Valoracion","0");
+                                hopperUpdates.put("Valoracion",0.0f);
                                 hopperUpdates.put("Id",id);
                                 hopperUpdates.put("Publicado",false);
+                                hopperUpdates.put("FechaPublicado",currentDate);
                                 hopperUpdates.put("Paginas","");
+                                hopperUpdates.put("Valoraciones","");
 
                                 myRef.child(id).setValue(hopperUpdates);
                                 myRef.child(id).child("Paginas").setValue(paginas);

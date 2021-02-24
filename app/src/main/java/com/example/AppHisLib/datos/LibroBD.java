@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.example.AppHisLib.casosdeuso.Libros;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -81,6 +82,7 @@ public class LibroBD extends SQLiteOpenHelper {
                     //Insertar en la tabla de perfil
                     myRef = db.getReference("Usuarios").child(ds.getKey());
                     for(DataSnapshot ds2 : snapshot.getChildren()) {
+                        //Guardo los datos de todos los perfiles por si mas adelante quiero hacer algo con ellos
                         valoresUsuarios.put(ConstantesBD.ID_PERFIL,"1");
                         valoresPerfil.put(ConstantesBD.ID_PERFIL,"1");
                         valoresPerfil.put(ConstantesBD.P_AUTOR,ds2.child("Perfil").child("Autor").getValue(String.class));
@@ -91,6 +93,7 @@ public class LibroBD extends SQLiteOpenHelper {
 
                         for(DataSnapshot ds3 : ds2.child("Libros").getChildren()){
                             if(ds3.child("Publicado").getValue(Boolean.class)){
+                                valoresUsuarios.put(ConstantesBD.ID_LIBROS,ds3.getKey());
                                 valoresLibros.put(ConstantesBD.ID_LIBROS,ds3.child("Id").getValue(String.class));
                                 valoresLibros.put(ConstantesBD.L_AUTOR,ds3.child("Autor").getValue(String.class));
                                 valoresLibros.put(ConstantesBD.L_DESCRIPCION,ds3.child("Descripcion").getValue(String.class));
@@ -122,10 +125,6 @@ public class LibroBD extends SQLiteOpenHelper {
                     }
 
                 }
-                //System.out.println("Valores Usuario: "+valoresUsuarios.toString());
-                //System.out.println("Valores Perfil : "+valoresPerfil.toString());
-                //System.out.println("Valores Libros: "+valoresLibros.toString());
-                //System.out.println("Valores Paginas: "+valoresPaginas.toString());
             }
 
             @Override
@@ -133,6 +132,41 @@ public class LibroBD extends SQLiteOpenHelper {
 
             }
         });
+    } //fin obtenerDatos
+
+    //Metodo para obtener todos los libros publicados despues de que el metodo obtenerDatos() haya sido ejecutado
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    public ArrayList<Libros> devolverLibros(){
+        ArrayList<Libros> listaLibrosPublicados = new ArrayList<>();
+
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM "+ConstantesBD.TABLE_NAME_LIBROS;
+
+        Cursor cursor;
+        cursor = db.rawQuery(query,null);
+        CursorWindow cursorWindow = new CursorWindow("test",500000000);
+        AbstractWindowedCursor ac = (AbstractWindowedCursor) cursor;
+        ac.setWindow(cursorWindow);
+
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+            do{
+                listaLibrosPublicados.add(new Libros(
+                    cursor.getString(cursor.getColumnIndex(ConstantesBD.L_AUTOR)),
+                    cursor.getString(cursor.getColumnIndex(ConstantesBD.L_DESCRIPCION)),
+                    cursor.getString(cursor.getColumnIndex(ConstantesBD.L_FOTO)),
+                    cursor.getString(cursor.getColumnIndex(ConstantesBD.L_DESCRIPCION)),
+                    cursor.getString(cursor.getColumnIndex(ConstantesBD.L_VALORACION)),
+                    cursor.getString(cursor.getColumnIndex(ConstantesBD.L_IDENTIFICADOR_LIBRO)),
+                    cursor.getString(cursor.getColumnIndex(ConstantesBD.L_FECHA_PUBLICADO))
+                ));
+            }while(cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return listaLibrosPublicados;
     }
 
 }
