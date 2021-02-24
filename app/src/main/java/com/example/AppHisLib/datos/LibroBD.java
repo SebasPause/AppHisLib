@@ -26,7 +26,7 @@ public class LibroBD extends SQLiteOpenHelper {
 
     private DatabaseReference myRef;
     FirebaseDatabase db;
-    ContentValues valoresUsuarios,valoresPerfil,valoresLibros;
+    ContentValues valoresUsuarios,valoresPerfil,valoresLibros,valoresPaginas,valoresValoraciones;
 
     public LibroBD(@Nullable Context context) {
         super(context, ConstantesBD.BD_NAME, null, 1);
@@ -34,6 +34,7 @@ public class LibroBD extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL(ConstantesBD.CREATE_TABLE_VALORACIONES);
         db.execSQL(ConstantesBD.CREATE_TABLE_PAGINAS);
         db.execSQL(ConstantesBD.CREATE_TABLE_LIBROS);
         db.execSQL(ConstantesBD.CREATE_TABLE_PERFIL);
@@ -43,6 +44,7 @@ public class LibroBD extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Volver a crear la tabla
+        db.execSQL("DROP TABLE IF EXISTS " + ConstantesBD.TABLE_NAME_VALORACIONES);
         db.execSQL("DROP TABLE IF EXISTS " + ConstantesBD.TABLE_NAME_PAGINAS);
         db.execSQL("DROP TABLE IF EXISTS " + ConstantesBD.TABLE_NAME_LIBROS);
         db.execSQL("DROP TABLE IF EXISTS " + ConstantesBD.TABLE_NAME_PERFIL);
@@ -65,6 +67,8 @@ public class LibroBD extends SQLiteOpenHelper {
         valoresUsuarios = new ContentValues();
         valoresPerfil = new ContentValues();
         valoresLibros = new ContentValues();
+        valoresPaginas = new ContentValues();
+        valoresValoraciones = new ContentValues();
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -75,23 +79,53 @@ public class LibroBD extends SQLiteOpenHelper {
                     sqDB.insert(ConstantesBD.TABLE_NAME_USUARIO,null,valoresUsuarios);
 
                     //Insertar en la tabla de perfil
-                    valoresPerfil.put(ConstantesBD.ID_PERFIL,ds.getKey());
                     myRef = db.getReference("Usuarios").child(ds.getKey());
                     for(DataSnapshot ds2 : snapshot.getChildren()) {
-                        valoresPerfil.put(ConstantesBD.P_AUTOR,ds.child("Perfil").child("Autor").getValue(String.class));
-                        valoresPerfil.put(ConstantesBD.P_AUTOR,ds.child("Perfil").child("Descripcion").getValue(String.class));
-                        valoresPerfil.put(ConstantesBD.P_AUTOR,ds.child("Perfil").child("Edad").getValue(String.class));
-                        valoresPerfil.put(ConstantesBD.P_AUTOR,ds.child("Perfil").child("Foto").getValue(String.class));
+                        valoresUsuarios.put(ConstantesBD.ID_PERFIL,"1");
+                        valoresPerfil.put(ConstantesBD.ID_PERFIL,"1");
+                        valoresPerfil.put(ConstantesBD.P_AUTOR,ds2.child("Perfil").child("Autor").getValue(String.class));
+                        valoresPerfil.put(ConstantesBD.P_AUTOR,ds2.child("Perfil").child("Descripcion").getValue(String.class));
+                        valoresPerfil.put(ConstantesBD.P_AUTOR,ds2.child("Perfil").child("Edad").getValue(String.class));
+                        valoresPerfil.put(ConstantesBD.P_AUTOR,ds2.child("Perfil").child("Foto").getValue(String.class));
                         sqDB.insert(ConstantesBD.TABLE_NAME_PERFIL,null,valoresPerfil);
 
-                        //Insertar en la tabla libros
-                        //valoresLibros.put();
+                        for(DataSnapshot ds3 : ds2.child("Libros").getChildren()){
+                            if(ds3.child("Publicado").getValue(Boolean.class)){
+                                valoresLibros.put(ConstantesBD.ID_LIBROS,ds3.child("Id").getValue(String.class));
+                                valoresLibros.put(ConstantesBD.L_AUTOR,ds3.child("Autor").getValue(String.class));
+                                valoresLibros.put(ConstantesBD.L_DESCRIPCION,ds3.child("Descripcion").getValue(String.class));
+                                valoresLibros.put(ConstantesBD.L_FECHA_PUBLICADO,ds3.child("FechaPublicado").getValue(String.class));
+                                valoresLibros.put(ConstantesBD.L_FOTO,ds3.child("Foto").getValue(String.class));
+                                valoresLibros.put(ConstantesBD.L_GENERO,ds3.child("Genero").getValue(String.class));
+                                valoresLibros.put(ConstantesBD.L_VALORACION,ds3.child("Valoracion").getValue(String.class));
+                                valoresLibros.put(ConstantesBD.L_ID_VALORACIONES,"1");
+                                valoresLibros.put(ConstantesBD.L_ID_PAGINAS,"1");
+                                sqDB.insert(ConstantesBD.TABLE_NAME_LIBROS,null,valoresLibros);
 
+                                for(DataSnapshot ds4 : ds3.child("Paginas").getChildren()){
+                                    valoresPaginas.put(ConstantesBD.L_ID_PAGINAS,"1");
+                                    valoresPaginas.put(ConstantesBD.PA_NUMERO_PAGINA,ds4.getKey());
+                                    valoresPaginas.put(ConstantesBD.PA_CONTENIDO,ds4.getValue(String.class));
+                                }
+
+                                if(ds3.child("Valoraciones").hasChildren()){
+                                    for(DataSnapshot ds5 : ds3.child("Valoraciones").getChildren()){
+                                        valoresValoraciones.put(ConstantesBD.L_ID_VALORACIONES,"1");
+                                        valoresValoraciones.put(ConstantesBD.VA_COMENTARIO,ds5.child("Comentario").getValue(String.class));
+                                        valoresValoraciones.put(ConstantesBD.VA_VALOR,ds5.child("Valor").getValue(Float.class));
+                                    }
+                                }
+
+                            }
+                        }
 
                     }
+
                 }
-                System.out.println("Valores Usuario: "+valoresUsuarios.toString());
-                System.out.println("Valores Perfil : "+valoresPerfil.toString());
+                //System.out.println("Valores Usuario: "+valoresUsuarios.toString());
+                //System.out.println("Valores Perfil : "+valoresPerfil.toString());
+                //System.out.println("Valores Libros: "+valoresLibros.toString());
+                //System.out.println("Valores Paginas: "+valoresPaginas.toString());
             }
 
             @Override

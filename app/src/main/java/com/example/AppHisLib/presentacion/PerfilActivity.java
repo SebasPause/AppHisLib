@@ -93,7 +93,6 @@ public class PerfilActivity extends BaseActivity implements Serializable {
 
             }
         });
-        Toast.makeText(this, "Estoy en el perfil", Toast.LENGTH_SHORT).show();
 
     }
 

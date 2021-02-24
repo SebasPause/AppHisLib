@@ -160,6 +160,7 @@ public class AnadirLibroActivity extends AppCompatActivity {
                                 hopperUpdates.put("Publicado",false);
                                 hopperUpdates.put("FechaPublicado",currentDate);
                                 hopperUpdates.put("Paginas","");
+                                hopperUpdates.put("Valoraciones","");
 
                                 myRef.child(id).setValue(hopperUpdates);
                                 myRef.child(id).child("Paginas").setValue(paginas);

@@ -13,6 +13,7 @@ public class ConstantesBD {
     public static final String TABLE_NAME_PERFIL = "Perfil";
     public static final String TABLE_NAME_LIBROS = "Libros";
     public static final String TABLE_NAME_PAGINAS = "Paginas";
+    public static final String TABLE_NAME_VALORACIONES = "Valoraciones";
 
     //Nombre de campos de la tabla Usuarios
     public static final String U_USUARIO = "USUARIO";
@@ -35,10 +36,16 @@ public class ConstantesBD {
     public static final String L_FECHA_PUBLICADO = "FECHA_PUBLICADO";
     public static final String L_VALORACION = "VALORACION";
     public static final String L_ID_PAGINAS = "ID_PAGINAS";
+    public static final String L_ID_VALORACIONES ="ID_VALORACIONES";
 
     //Nombre de campos de la tabla Paginas
     public static final String PA_NUMERO_PAGINA = "NUMERO_PAGINA";
     public static final String PA_CONTENIDO = "CONTENIDO";
+
+    //Nombre de campos de la tabla Paginas
+    public static final String VA_COMENTARIO = "COMENTARIO";
+    public static final String VA_VALOR = "VALOR";
+
 
 
     //Codigo de creacion de la tabla de Usuario
@@ -71,6 +78,7 @@ public class ConstantesBD {
             + L_FECHA_PUBLICADO + " TEXT, "
             + L_VALORACION + " TEXT, "
             + L_ID_PAGINAS + " TEXT, "
+            + L_ID_VALORACIONES + " TEXT, "
             + " FOREIGN KEY ("+L_ID_PAGINAS+") REFERENCES "+TABLE_NAME_PAGINAS+"("+L_ID_PAGINAS+")"
             +")";
 
@@ -80,6 +88,14 @@ public class ConstantesBD {
             + PA_NUMERO_PAGINA + " TEXT, "
             + PA_CONTENIDO + " TEXT "
             + ")";
+
+    //Codigo de creacion de la tabla de Valoraciones
+    public static final String CREATE_TABLE_VALORACIONES = "CREATE TABLE "+ TABLE_NAME_VALORACIONES + "("
+            + L_ID_VALORACIONES + " TEXT PRIMARY KEY UNIQUE, "
+            + VA_COMENTARIO + " TEXT, "
+            + VA_VALOR + " FLOAT "
+            + ")";
+
 
 
 }

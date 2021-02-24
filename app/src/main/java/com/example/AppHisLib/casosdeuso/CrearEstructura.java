@@ -118,8 +118,6 @@ public class CrearEstructura {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             for (DataSnapshot ds2 : snapshot.getChildren()) {
-                                System.out.println("Referencia: " + myRef2);
-                                System.out.println("Publicado: " + ds2.child("Publicado").getValue(Boolean.class));
                                 boolean publicado = ds2.child("Publicado").getValue(Boolean.class);
                                 if (publicado) {
                                     //se insertara en la lista de libros
