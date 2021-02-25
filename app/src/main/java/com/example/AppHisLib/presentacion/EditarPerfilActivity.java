@@ -9,9 +9,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.View;
@@ -32,6 +34,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.DatosPerfil;
 import com.example.AppHisLib.casosdeuso.Libros;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,14 +42,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +70,9 @@ public class EditarPerfilActivity extends AppCompatActivity {
     Button btnGuardarDatosPerfil;
     private String usuario;
     Uri uri;
+    InputStream stream = null;
+    File file = null;
+    private Bitmap my_image;
 
     //Para la foto de perfil
     private static final int REQUEST_PERMISION_CAMERA = 1;
@@ -137,11 +147,18 @@ public class EditarPerfilActivity extends AppCompatActivity {
             hopperUpdates.put("Edad",edad);
 
             myRef.child(usuario).child("Perfil").updateChildren(hopperUpdates);
-
             mStorage = FirebaseStorage.getInstance();
             storageRef = mStorage.getReference();
-            storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(Uri.fromFile(new File(imgEditarPerfil.toString())));
+            char charFoto = uri.toString().charAt(0);
+            String letra = String.valueOf(charFoto);
 
+            if(letra.equals("a")){
+                //nada
+
+            }else{
+                //nada
+                storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(uri);
+            }
             Toast.makeText(this, "Datos modificados correctamente,Volviendo al perfil", Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(new Runnable() {
                 @Override
