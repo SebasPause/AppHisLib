@@ -99,12 +99,13 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
             StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg");
             storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
-                public void onSuccess(Uri uri) {
+                public void onSuccess(Uri uri1) {
                     Glide.with(contexto)
-                            .load(uri)
+                            .load(uri1)
                             .fitCenter()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
                             .into(holder.imagenListaLibros);
+                    uri = uri1;
                 }
             });
 
@@ -128,12 +129,12 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
 
         //Para la imagen de opciones
         holder.imagenOpciones.setOnClickListener(v -> {
-            mostrarOpciones(""+position,id,autor,descripcion,genero,foto,valoracion);
+            mostrarOpciones(""+position,id,autor,descripcion,genero,foto,valoracion,letra);
         });
 
     }
 
-    public void mostrarOpciones(String position, String id, String autor, String descripcion, String genero, String foto, String valoracion){
+    public void mostrarOpciones(String position, String id, String autor, String descripcion, String genero, String foto, String valoracion,String letra){
         //Array para que aparezca en el dialogo
         String[] opciones = {"Ver Libro","Escribir Libro","Editar Informacion Libro","Publicar Libro","Eliminar Libro"};
 
@@ -175,6 +176,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                     intent.putExtra("EditarLibro",true);
                     intent.putExtra("IDlibro",id);
                     intent.putExtra("AnadirLibro",false);
+                    intent.putExtra("Letra",letra);
                     contexto.startActivity(intent);
                 }
                 else if(which == 3){

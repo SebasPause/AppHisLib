@@ -48,7 +48,6 @@ public class PerfilActivity extends BaseActivity implements Serializable {
     FirebaseDatabase db;
     Uri uri;
     ActionBar actionBar;
-    List<Libros> listaLibrosPublicados;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -59,13 +58,6 @@ public class PerfilActivity extends BaseActivity implements Serializable {
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Perfil");
-
-        Bundle extras = getIntent().getExtras();
-        if(extras == null){
-            //nada
-        }else{
-            listaLibrosPublicados = (List<Libros>) extras.getSerializable("ListaLibrosPublicados");
-        }
 
         txtAutor = (TextView)findViewById(R.id.txtAutor);
         txtDescripcion = (TextView)findViewById(R.id.txtDescripcion);
@@ -147,6 +139,7 @@ public class PerfilActivity extends BaseActivity implements Serializable {
 
     private void lanzarEditarPerfil(View view) {
         Intent intent = new Intent(this, EditarPerfilActivity.class);
+
         startActivity(intent);
     }
 

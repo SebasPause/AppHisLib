@@ -44,6 +44,7 @@ import com.google.firebase.storage.StorageReference;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
@@ -62,7 +63,6 @@ public class EditarPerfilActivity extends AppCompatActivity {
     Button btnGuardarDatosPerfil;
     private String usuario;
     Uri uri;
-    List<Libros> listaLibrosPublicados;
 
     //Para la foto de perfil
     private static final int REQUEST_PERMISION_CAMERA = 1;
@@ -86,11 +86,6 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
 
         Bundle extras = getIntent().getExtras();
-        if(extras == null){
-            //nada
-        }else{
-            listaLibrosPublicados = (List<Libros>) extras.getSerializable("ListaLibrosPublicados");
-        }
 
         txtAutor = (EditText)findViewById(R.id.txtAutor);
         txtDescripcion = (EditText)findViewById(R.id.txtDescripcion);
@@ -145,15 +140,13 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
             mStorage = FirebaseStorage.getInstance();
             storageRef = mStorage.getReference();
-            storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(uri);
+            storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(Uri.fromFile(new File(imgEditarPerfil.toString())));
 
             Toast.makeText(this, "Datos modificados correctamente,Volviendo al perfil", Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     Intent i=new Intent(EditarPerfilActivity.this,PerfilActivity.class);
-                    i.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
-                    i.putExtra("Accion",true);
                     startActivity(i);
                 }
             }, 2000);
@@ -168,12 +161,13 @@ public class EditarPerfilActivity extends AppCompatActivity {
         storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess(Uri uri) {
+            public void onSuccess(Uri uri1) {
                 Glide.with(EditarPerfilActivity.this)
-                        .load(uri)
+                        .load(uri1)
                         .fitCenter()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
                         .into(imgEditarPerfil);
+                uri = uri1;
             }
         });
     }

@@ -43,7 +43,6 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
     RecyclerView librosPublicados;
     RecyclerView.Adapter adapter2;
     RecyclerView.LayoutManager layoutManager2;
-    List<Libros> listaLibrosPublicados;
 
     @SuppressLint("RestrictedApi")
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -57,10 +56,11 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
 
         Bundle extras = getIntent().getExtras();
         if(extras == null){
-            //nada
             LibroBD bd = new LibroBD(this);
+            List<Libros> listaLibrosPublicados = new ArrayList<>();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 listaLibrosPublicados = bd.devolverLibros();
+
             }
 
             librosPublicados = findViewById(R.id.rvListaLibrosPublicados);
@@ -69,9 +69,12 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
             librosPublicados.setLayoutManager(layoutManager2);
             librosPublicados.setHasFixedSize(true);
             librosPublicados.setAdapter(adapter2);
+            Toast.makeText(this, "Estoy aqui 1,Libros: "+listaLibrosPublicados.size(), Toast.LENGTH_SHORT).show();
+            System.out.println("Estoy aqui 1");
 
         }else{
             if(extras.getBoolean("LibrosPublicados")){
+                List<Libros> listaLibrosPublicados = new ArrayList<>();
                 LibroBD bd = new LibroBD(this);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     listaLibrosPublicados = bd.devolverLibros();
@@ -89,10 +92,13 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
                 librosPublicados.setLayoutManager(layoutManager2);
                 librosPublicados.setHasFixedSize(true);
                 librosPublicados.setAdapter(adapter2);
+                Toast.makeText(this, "Estoy aqui 2", Toast.LENGTH_SHORT).show();
+                System.out.println("Estoy aqui 2");
 
             }else{
                 //nada
                 LibroBD bd = new LibroBD(this);
+                List<Libros> listaLibrosPublicados = new ArrayList<>();
                 bd.borrarLibros();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     listaLibrosPublicados = bd.devolverLibros();
@@ -104,6 +110,8 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
                 librosPublicados.setLayoutManager(layoutManager2);
                 librosPublicados.setHasFixedSize(true);
                 librosPublicados.setAdapter(adapter2);
+                Toast.makeText(this, "Estoy aqui 3", Toast.LENGTH_SHORT).show();
+                System.out.println("Estoy aqui 3");
             }
         }
 

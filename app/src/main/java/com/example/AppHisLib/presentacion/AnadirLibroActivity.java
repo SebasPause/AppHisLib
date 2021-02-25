@@ -100,6 +100,7 @@ public class AnadirLibroActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
             cargarDatos(extras.getString("IDlibro"));
+            String letra = extras.getString("Letra");
             cargarImagen(extras.getString("IDlibro"));
             listaLibrosPublicados = (List<Libros>) extras.getSerializable("ListaLibrosPublicados");
         }
@@ -299,12 +300,13 @@ public class AnadirLibroActivity extends AppCompatActivity {
         StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Libros").child(idLibro).child("Libro.jpeg");
         storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess(Uri uri) {
+            public void onSuccess(Uri uri1) {
                 Glide.with(AnadirLibroActivity.this)
-                        .load(uri)
+                        .load(uri1)
                         .fitCenter()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
                         .into(imgAnadirLibro);
+                uri = uri1;
             }
         });
     }
