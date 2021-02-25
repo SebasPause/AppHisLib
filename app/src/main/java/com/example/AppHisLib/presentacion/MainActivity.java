@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     CrearEstructura ce;
     private String usuario;
     DatabaseReference myRef,myRef2;
-    List<Libros> listaLibrosPublicados;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -51,56 +50,6 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         LibroBD bd = new LibroBD(this);
         bd.onUpgrade(bd.getWritableDatabase(),1,2);
         bd.obtenerDatos();
-
-        listaLibrosPublicados = new ArrayList<>();
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
-        myRef2 = FirebaseDatabase.getInstance().getReference("Usuarios");
-        myRef = db.getReference().child("Usuarios");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    myRef2 = myRef2.child(ds.getKey()).child("Libros");
-                    myRef2.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (DataSnapshot ds2 : snapshot.getChildren()) {
-                                System.out.println("Referencia: " + myRef2);
-                                System.out.println("Publicado: " + ds2.child("Publicado").getValue(Boolean.class));
-                                boolean publicado = ds2.child("Publicado").getValue(Boolean.class);
-                                if (publicado) {
-                                    //se insertara en la lista de libros
-                                    String autor = ds2.child("Autor").getValue(String.class);
-                                    String descripcion = ds2.child("Descripcion").getValue(String.class);
-                                    String foto = ds2.child("Foto").getValue(String.class);
-                                    String genero = ds2.child("Genero").getValue(String.class);
-                                    String Id = ds2.child("Id").getValue(String.class);
-                                    String valoracion = ds2.child("Valoracion").getValue(String.class);
-                                    String FechaPublicado = ds2.child("FechaPublicado").getValue(String.class);
-                                    Libros libro = new Libros(autor, descripcion, genero, foto, valoracion, Id, FechaPublicado);
-
-                                    listaLibrosPublicados.add(libro);
-                                } else {
-                                    //no esta publicado
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
 
         //Incializo objetos
         txtCorreo = (EditText)findViewById(R.id.txtCorreo);
@@ -137,11 +86,10 @@ public class MainActivity extends AppCompatActivity implements Serializable{
                                         public void run() {
                                             Intent intent = new Intent(MainActivity.this, ContentMainActivity.class);
                                             intent.putExtra("email", task.getResult().getUser().getEmail());
+                                            intent.putExtra("LibrosPublicados",true);
                                             usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                             myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
-
-                                            intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
-                                            intent.putExtra("Accion",true);
+                                            Toast.makeText(MainActivity.this, "Cargando Libros", Toast.LENGTH_SHORT).show();
                                             startActivity(intent);
                                         }
                                     }, 2001);

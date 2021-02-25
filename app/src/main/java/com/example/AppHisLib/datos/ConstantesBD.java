@@ -37,6 +37,7 @@ public class ConstantesBD {
     public static final String L_VALORACION = "VALORACION";
     public static final String L_ID_PAGINAS = "ID_PAGINAS";
     public static final String L_ID_VALORACIONES ="ID_VALORACIONES";
+    public static final String L_USUARIO_LIBRO = "USUARIOLIBRO";
 
     //Nombre de campos de la tabla Paginas
     public static final String PA_NUMERO_PAGINA = "NUMERO_PAGINA";
@@ -50,7 +51,7 @@ public class ConstantesBD {
 
     //Codigo de creacion de la tabla de Usuario
     public static final String CREATE_TABLE_USUARIO = "CREATE TABLE "+ TABLE_NAME_USUARIO + "("
-            + U_USUARIO + " TEXT PRIMARY KEY UNIQUE, "
+            + U_USUARIO + " TEXT, "
             + ID_PERFIL + " TEXT, "
             + ID_LIBROS + " TEXT, "
             + " FOREIGN KEY ("+ID_PERFIL+") REFERENCES "+TABLE_NAME_PERFIL+"("+ID_PERFIL+"),"
@@ -59,7 +60,7 @@ public class ConstantesBD {
 
     //Codigo de creacion de la tabla de Perfil
     public static final String CREATE_TABLE_PERFIL = "CREATE TABLE "+ TABLE_NAME_PERFIL + "("
-            + ID_PERFIL + " TEXT PRIMARY KEY UNIQUE, "
+            + ID_PERFIL + " TEXT, "
             + P_AUTOR + " TEXT, "
             + P_DESCRIPCION + " TEXT, "
             + P_EDAD + " TEXT, "
@@ -68,7 +69,7 @@ public class ConstantesBD {
 
     //Codigo de creacion de la tabla de Libros
     public static final String CREATE_TABLE_LIBROS = "CREATE TABLE "+ TABLE_NAME_LIBROS + "("
-            + ID_LIBROS + " TEXT PRIMARY KEY UNIQUE, "
+            + ID_LIBROS + " TEXT, "
             + L_IDENTIFICADOR_LIBRO + " TEXT, "
             + L_AUTOR + " TEXT, "
             + L_DESCRIPCION + " TEXT, "
@@ -79,12 +80,13 @@ public class ConstantesBD {
             + L_VALORACION + " TEXT, "
             + L_ID_PAGINAS + " TEXT, "
             + L_ID_VALORACIONES + " TEXT, "
+            + L_USUARIO_LIBRO + " TEXT, "
             + " FOREIGN KEY ("+L_ID_PAGINAS+") REFERENCES "+TABLE_NAME_PAGINAS+"("+L_ID_PAGINAS+")"
             +")";
 
     //Codigo de creacion de la tabla de Paginas
     public static final String CREATE_TABLE_PAGINAS = "CREATE TABLE "+ TABLE_NAME_PAGINAS + "("
-            + L_ID_PAGINAS + " TEXT PRIMARY KEY UNIQUE, "
+            + L_ID_PAGINAS + " TEXT, "
             + PA_NUMERO_PAGINA + " TEXT, "
             + PA_CONTENIDO + " TEXT "
             + ")";
@@ -93,7 +95,7 @@ public class ConstantesBD {
     public static final String CREATE_TABLE_VALORACIONES = "CREATE TABLE "+ TABLE_NAME_VALORACIONES + "("
             + L_ID_VALORACIONES + " TEXT PRIMARY KEY UNIQUE, "
             + VA_COMENTARIO + " TEXT, "
-            + VA_VALOR + " FLOAT "
+            + VA_VALOR + " TEXT "
             + ")";
 
 

@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
+import com.example.AppHisLib.datos.LibroBD;
 import com.example.AppHisLib.presentacion.AnadirLibroActivity;
 import com.example.AppHisLib.presentacion.EscribirLibroActivity;
 import com.example.AppHisLib.presentacion.LibrosActivity;
@@ -52,6 +53,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
     HashMap<String,String> contenidoPagina;
     FirebaseDatabase db;
     String nrPagina,texto;
+    CrearEstructura ce;
 
 
     public AdaptadorListaLibros(Context contexto, List<Libros> libros){
@@ -176,21 +178,32 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                     contexto.startActivity(intent);
                 }
                 else if(which == 3){
-                    //Para publicar un libro
+                    //Para actualizar el campo Publicado del objeto libro
                     AlertDialog.Builder builderEliminar = new AlertDialog.Builder(contexto);
-                    builderEliminar.setTitle("Estas seguro de querer publicarlo?")
-                            .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    builderEliminar.setTitle("Elige una opcion:")
+                            .setPositiveButton("Publicar", new DialogInterface.OnClickListener() {
                                 @RequiresApi(api = Build.VERSION_CODES.P)
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    LibroBD bd = new LibroBD(contexto);
+                                    bd.borrarLibros();
                                     usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                    CrearEstructura ce = new CrearEstructura(contexto,usuario,myRef);
-                                    ce.publicarLibro(id,usuario);
-                                    ((LibrosActivity)contexto).onResume();
+                                    ce = new CrearEstructura(contexto,usuario,myRef);
+                                    ce.publicarLibro(id,usuario,true);
                                     Toast.makeText(contexto, "Libro Publicado", Toast.LENGTH_SHORT).show();
                                 }
                             })
-                            .setNegativeButton("No",null);
+                            .setNegativeButton("Eliminar Publicación", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    LibroBD bd = new LibroBD(contexto);
+                                    bd.borrarLibros();
+                                    usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                    ce = new CrearEstructura(contexto,usuario,myRef);
+                                    ce.publicarLibro(id,usuario,false);
+                                    Toast.makeText(contexto, "El libro ha sido eliminado de la lista de libros publicados", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                     builderEliminar.create().show();
                 }
                 else if(which == 4){

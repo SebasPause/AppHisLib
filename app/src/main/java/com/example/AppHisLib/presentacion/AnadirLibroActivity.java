@@ -155,12 +155,13 @@ public class AnadirLibroActivity extends AppCompatActivity {
                                 hopperUpdates.put("Autor", autor);
                                 hopperUpdates.put("Descripcion",descripcion);
                                 hopperUpdates.put("Genero",genero);
-                                hopperUpdates.put("Valoracion",0.0f);
+                                hopperUpdates.put("Valoracion","0");
                                 hopperUpdates.put("Id",id);
                                 hopperUpdates.put("Publicado",false);
                                 hopperUpdates.put("FechaPublicado",currentDate);
                                 hopperUpdates.put("Paginas","");
                                 hopperUpdates.put("Valoraciones","");
+                                hopperUpdates.put("Usuario",usuario);
 
                                 myRef.child(id).setValue(hopperUpdates);
                                 myRef.child(id).child("Paginas").setValue(paginas);
@@ -177,12 +178,13 @@ public class AnadirLibroActivity extends AppCompatActivity {
                                 hopperUpdates.put("Autor", autor);
                                 hopperUpdates.put("Descripcion",descripcion);
                                 hopperUpdates.put("Genero",genero);
-                                hopperUpdates.put("Valoracion",0.0f);
+                                hopperUpdates.put("Valoracion","0");
                                 hopperUpdates.put("Id",id);
                                 hopperUpdates.put("Publicado",false);
                                 hopperUpdates.put("FechaPublicado",currentDate);
                                 hopperUpdates.put("Paginas","");
                                 hopperUpdates.put("Valoraciones","");
+                                hopperUpdates.put("Usuario",usuario);
 
                                 myRef.child(id).setValue(hopperUpdates);
                                 myRef.child(id).child("Paginas").setValue(paginas);

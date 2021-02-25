@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -42,8 +44,6 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
     RecyclerView.Adapter adapter2;
     RecyclerView.LayoutManager layoutManager2;
     List<Libros> listaLibrosPublicados;
-    Boolean accion;
-    List<Libros> listaLibrosPublicados2;
 
     @SuppressLint("RestrictedApi")
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -55,35 +55,13 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
         actionBar = getSupportActionBar();
         actionBar.setTitle("Principal");
 
-        LibroBD bd = new LibroBD(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            listaLibrosPublicados2 = bd.devolverLibros();
-        }
-        System.out.println("Lista de libros publicados: "+listaLibrosPublicados2.toString());
-        Toast.makeText(this, ""+listaLibrosPublicados2.toString(), Toast.LENGTH_SHORT).show();
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            //bd.mostrarUsuarios();
-        }
-
-        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
-        myRef2 = FirebaseDatabase.getInstance().getReference("Usuarios");
-        ce = new CrearEstructura(ContentMainActivity.this,usuario,myRef);
-        ce.crearEstructuraDatos();
         Bundle extras = getIntent().getExtras();
-        if(extras==null){
+        if(extras == null){
             //nada
-            accion = false;
-            System.out.println("Si extra es null: "+listaLibrosPublicados.size());
-        }else{
-            accion = extras.getBoolean("Accion");
-        }
-        if(accion){
-            extras = getIntent().getExtras();
-            listaLibrosPublicados = (List<Libros>) extras.getSerializable("ListaLibrosPublicados");
-            System.out.println("Si extra es true: "+listaLibrosPublicados.size());
+            LibroBD bd = new LibroBD(this);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                listaLibrosPublicados = bd.devolverLibros();
+            }
 
             librosPublicados = findViewById(R.id.rvListaLibrosPublicados);
             adapter2 = new AdaptadorLibrosPublicados(ContentMainActivity.this,listaLibrosPublicados);
@@ -91,8 +69,45 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
             librosPublicados.setLayoutManager(layoutManager2);
             librosPublicados.setHasFixedSize(true);
             librosPublicados.setAdapter(adapter2);
-            accion=false;
+
+        }else{
+            if(extras.getBoolean("LibrosPublicados")){
+                LibroBD bd = new LibroBD(this);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    listaLibrosPublicados = bd.devolverLibros();
+                }
+
+                usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
+                myRef2 = FirebaseDatabase.getInstance().getReference("Usuarios");
+                ce = new CrearEstructura(ContentMainActivity.this,usuario,myRef);
+                ce.crearEstructuraDatos();
+
+                librosPublicados = findViewById(R.id.rvListaLibrosPublicados);
+                adapter2 = new AdaptadorLibrosPublicados(ContentMainActivity.this,listaLibrosPublicados);
+                layoutManager2 = new LinearLayoutManager(ContentMainActivity.this);
+                librosPublicados.setLayoutManager(layoutManager2);
+                librosPublicados.setHasFixedSize(true);
+                librosPublicados.setAdapter(adapter2);
+
+            }else{
+                //nada
+                LibroBD bd = new LibroBD(this);
+                bd.borrarLibros();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    listaLibrosPublicados = bd.devolverLibros();
+                }
+
+                librosPublicados = findViewById(R.id.rvListaLibrosPublicados);
+                adapter2 = new AdaptadorLibrosPublicados(ContentMainActivity.this,listaLibrosPublicados);
+                layoutManager2 = new LinearLayoutManager(ContentMainActivity.this);
+                librosPublicados.setLayoutManager(layoutManager2);
+                librosPublicados.setHasFixedSize(true);
+                librosPublicados.setAdapter(adapter2);
+            }
         }
+
+
 
         btnNavegacion = (BottomNavigationView)findViewById(R.id.btnNavegacion);
 
@@ -108,17 +123,14 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
             Intent intent;
             if(itemId == R.id.irPerfil){
                 intent = new Intent(this, PerfilActivity.class);
-                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
                 startActivity(intent);
             }
             if(itemId == R.id.irPrincipal){
                 intent = new Intent(this,ContentMainActivity.class);
-                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
                 startActivity(intent);
             }
             if(itemId == R.id.irLibros){
                 intent = new Intent(this, LibrosActivity.class);
-                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
                 startActivity(intent);
             }
             finish();
@@ -135,5 +147,35 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
     @Override
     int getLayoutId() {
         return R.layout.content_main;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_actualizar,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.btnActualizarLibros){
+            Toast.makeText(ContentMainActivity.this, "Actualizando la lista de libros publicados", Toast.LENGTH_SHORT).show();
+            LibroBD bd = new LibroBD(this);
+            bd.onUpgrade(bd.getWritableDatabase(),1,2);
+            bd.obtenerDatos();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(ContentMainActivity.this, ContentMainActivity.class);
+                    startActivity(intent);
+                }
+            }, 2000);
+            return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 }

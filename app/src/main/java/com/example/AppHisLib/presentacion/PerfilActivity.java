@@ -147,7 +147,6 @@ public class PerfilActivity extends BaseActivity implements Serializable {
 
     private void lanzarEditarPerfil(View view) {
         Intent intent = new Intent(this, EditarPerfilActivity.class);
-        intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
         startActivity(intent);
     }
 
@@ -159,20 +158,14 @@ public class PerfilActivity extends BaseActivity implements Serializable {
             Intent intent;
             if(itemId == R.id.irPerfil){
                 intent = new Intent(this,PerfilActivity.class);
-                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
-                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             if(itemId == R.id.irPrincipal){
                 intent = new Intent(this, ContentMainActivity.class);
-                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
-                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             if(itemId == R.id.irLibros){
                 intent = new Intent(this, LibrosActivity.class);
-                intent.putExtra("ListaLibrosPublicados", (Serializable) listaLibrosPublicados);
-                intent.putExtra("Accion",true);
                 startActivity(intent);
             }
             finish();

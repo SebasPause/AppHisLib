@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.AppHisLib.datos.LibroBD;
 import com.example.AppHisLib.presentacion.ContentMainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -80,26 +81,23 @@ public class CrearEstructura {
 
     }
 
-    public void publicarLibro(String id, String usuarioLibro) {
+    public void publicarLibro(String id, String usuarioLibro,boolean publicarValor) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
 
+        /*if(publicarValor){
+            //nada
+        }else{
+            LibroBD bd = new LibroBD(contexto);
+            bd.borrarLibros();
+        }*/
+
         myRef = db.getReference().child("Usuarios").child(usuarioLibro).child("Libros");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        Map<String, Object> hopperUpdates = new HashMap<>();
+        hopperUpdates.put("Publicado", publicarValor);
+        hopperUpdates.put("FechaPublicado", currentDate);
+        myRef.child(id).updateChildren(hopperUpdates);
 
-                Map<String, Object> hopperUpdates = new HashMap<>();
-                hopperUpdates.put("Publicado", true);
-                hopperUpdates.put("FechaPublicado", currentDate);
-                myRef.child(id).updateChildren(hopperUpdates);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     } //fin publicarLibro
 
 
@@ -128,7 +126,8 @@ public class CrearEstructura {
                                     String Id = ds2.child("Id").getValue(String.class);
                                     String valoracion = ds2.child("Valoracion").getValue(String.class);
                                     String FechaPublicado = ds2.child("FechaPublicado").getValue(String.class);
-                                    Libros libro = new Libros(autor, descripcion, genero, foto, valoracion, Id, FechaPublicado);
+                                    String usuarioLibro = ds2.child("Usuario").getValue(String.class);
+                                    Libros libro = new Libros(autor, descripcion, genero, foto, valoracion, Id, FechaPublicado,usuarioLibro);
 
                                     listaLibrosPublicados.add(libro);
                                 } else {

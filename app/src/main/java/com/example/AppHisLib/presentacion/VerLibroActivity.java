@@ -1,6 +1,7 @@
 package com.example.AppHisLib.presentacion;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.AppHisLib.R;
+import com.example.AppHisLib.datos.LibroBD;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -39,6 +41,7 @@ public class VerLibroActivity extends AppCompatActivity {
     Boolean NuevaPagina;
     int posicionActual;
     ActionBar actionBar;
+    Collection<String> valores;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -55,15 +58,27 @@ public class VerLibroActivity extends AppCompatActivity {
         actionBar.setDisplayShowHomeEnabled(true);
 
         extras = getIntent().getExtras();
-        contenidoPagina = (HashMap<String,String>)extras.getSerializable("Paginas");
-        IdLibro = extras.getString("IdLibro");
+        if(extras.getBoolean("LibroPublicado")){
+            IdLibro = extras.getString("IdLibro");
+            LibroBD bd = new LibroBD(this);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                contenidoPagina = bd.cargarPaginasLibro(IdLibro);
+                valores = contenidoPagina.values();
+            }
+        }else{
+            contenidoPagina = (HashMap<String,String>)extras.getSerializable("Paginas");
+            IdLibro = extras.getString("IdLibro");
+            valores = contenidoPagina.values();
+        }
+
+
 
         edtEscribirLibro = findViewById(R.id.edtEscribirLibro);
         btnForward = findViewById(R.id.btnForward);
         btnBack = findViewById(R.id.btnBack);
         txtPagina = findViewById(R.id.txtPagina);
 
-        Collection<String> valores = contenidoPagina.values();
+
         System.out.println("Aqui tengo los valores: "+valores.toString());
 
         //Aqui hago el setText
