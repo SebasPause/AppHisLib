@@ -44,8 +44,6 @@ import java.util.List;
 public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLibrosPublicados.LibrosPublicadosViewHolder> {
 
     private Context contexto;
-    private String usuario;
-    DatabaseReference myRef;
     List<Libros> librosPublicados;
     Uri uri;
 

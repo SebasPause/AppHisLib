@@ -83,14 +83,6 @@ public class CrearEstructura {
 
     public void publicarLibro(String id, String usuarioLibro,boolean publicarValor) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
-
-        /*if(publicarValor){
-            //nada
-        }else{
-            LibroBD bd = new LibroBD(contexto);
-            bd.borrarLibros();
-        }*/
-
         myRef = db.getReference().child("Usuarios").child(usuarioLibro).child("Libros");
         String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         Map<String, Object> hopperUpdates = new HashMap<>();

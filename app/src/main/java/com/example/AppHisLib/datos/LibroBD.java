@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.ls.LSOutput;
@@ -31,6 +32,7 @@ public class LibroBD extends SQLiteOpenHelper {
 
     private DatabaseReference myRef;
     FirebaseDatabase db;
+    //FirebaseFirestore ff;
     ContentValues valoresUsuarios,valoresPerfil,valoresLibros,valoresPaginas,valoresValoraciones;
 
     public LibroBD(@Nullable Context context) {
@@ -78,6 +80,14 @@ public class LibroBD extends SQLiteOpenHelper {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                /**
+                 * Cada vez que se cambia un valor que va referenciado a la base de datos de firebase
+                 * el metodo onDataChange se ejecutara
+                 * por eso es necesario llamar al metodo onUpgrade para borrar todos los datos anteriores
+                 * y volver a insertar estos nuevos datos
+                 * con el fin de que no se dupliquen los datos
+                 */
+                onUpgrade(getWritableDatabase(),1,2);
                 for(DataSnapshot ds : snapshot.getChildren()){
                     //Insertar en la tabla de usuarios
                     valoresUsuarios.put(ConstantesBD.U_USUARIO,ds.getKey());
@@ -98,7 +108,7 @@ public class LibroBD extends SQLiteOpenHelper {
                         for(DataSnapshot ds3 : ds2.child("Libros").getChildren()){
                             if(ds3.child("Publicado").getValue(Boolean.class)==true){
                                 System.out.println("VALOR DEL BOOLEAN: "+ds3.child("Publicado").getValue(Boolean.class));
-                                System.out.println("ID DEL LIBRO: "+ds3.getKey());
+                                System.out.println("ID DEL LIBRO2: "+ds3.getKey());
                                 valoresUsuarios.put(ConstantesBD.ID_LIBROS,ds3.getKey());
                                 valoresLibros.put(ConstantesBD.ID_LIBROS,ds3.child("Id").getValue(String.class));
                                 valoresLibros.put(ConstantesBD.L_AUTOR,ds3.child("Autor").getValue(String.class));
@@ -136,6 +146,7 @@ public class LibroBD extends SQLiteOpenHelper {
 
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

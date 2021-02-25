@@ -109,6 +109,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                 }
             });
 
+            ce = new CrearEstructura(contexto,usuario,myRef);
         }
 
         //Si clicko en un libro
@@ -190,7 +191,6 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                                     LibroBD bd = new LibroBD(contexto);
                                     bd.borrarLibros();
                                     usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                    ce = new CrearEstructura(contexto,usuario,myRef);
                                     ce.publicarLibro(id,usuario,true);
                                     Toast.makeText(contexto, "Libro Publicado", Toast.LENGTH_SHORT).show();
                                 }
@@ -201,7 +201,6 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                                     LibroBD bd = new LibroBD(contexto);
                                     bd.borrarLibros();
                                     usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                    ce = new CrearEstructura(contexto,usuario,myRef);
                                     ce.publicarLibro(id,usuario,false);
                                     Toast.makeText(contexto, "El libro ha sido eliminado de la lista de libros publicados", Toast.LENGTH_SHORT).show();
                                 }
@@ -217,7 +216,6 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                    CrearEstructura ce = new CrearEstructura(contexto,usuario,myRef);
                                     System.out.println("Id:"+id+" Usuario:"+usuario);
                                     ce.borrarLibro(id,usuario);
                                     ((LibrosActivity)contexto).onResume();

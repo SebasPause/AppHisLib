@@ -60,7 +60,6 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
             List<Libros> listaLibrosPublicados = new ArrayList<>();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 listaLibrosPublicados = bd.devolverLibros();
-
             }
 
             librosPublicados = findViewById(R.id.rvListaLibrosPublicados);

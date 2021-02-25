@@ -79,7 +79,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAMERA = 2;
     private static final int REQUEST_PERMISION_EXTERNAL_STORAGE = 3;
     private static final int REQUEST_IMAGE_GALERY = 4;
-
+    private static boolean valor = false;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -94,7 +94,6 @@ public class EditarPerfilActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
-
         Bundle extras = getIntent().getExtras();
 
         txtAutor = (EditText)findViewById(R.id.txtAutor);
@@ -108,7 +107,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         downloadSetImage();
-        uri = Uri.parse(imgEditarPerfil.toString());
+
         myRef = db.getReference().child("Usuarios").child(usuario).child("Perfil");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -152,9 +151,10 @@ public class EditarPerfilActivity extends AppCompatActivity {
             char charFoto = uri.toString().charAt(0);
             String letra = String.valueOf(charFoto);
 
+            if(valor){
+                storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(uri);
+            }
 
-            uri = Uri.parse(imgEditarPerfil.toString());
-            storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(uri);
             Toast.makeText(this, "Datos modificados correctamente,Volviendo al perfil", Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -255,6 +255,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
                 try{
                     bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
                     imgEditarPerfil.setImageBitmap(bitmap);
+                    valor = true;
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -281,6 +282,7 @@ public class EditarPerfilActivity extends AppCompatActivity {
                 Uri imageUri = resultado.getUri();
                 uri = imageUri;
                 imgEditarPerfil.setImageURI(imageUri);
+                valor = true;
             } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = resultado.getError();
                 Toast.makeText(this, "" + error, Toast.LENGTH_SHORT).show();
