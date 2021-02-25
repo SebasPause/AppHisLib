@@ -152,13 +152,9 @@ public class EditarPerfilActivity extends AppCompatActivity {
             char charFoto = uri.toString().charAt(0);
             String letra = String.valueOf(charFoto);
 
-            if(letra.equals("a")){
-                //nada
 
-            }else{
-                //nada
-                storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(uri);
-            }
+            uri = Uri.parse(imgEditarPerfil.toString());
+            storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(uri);
             Toast.makeText(this, "Datos modificados correctamente,Volviendo al perfil", Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(new Runnable() {
                 @Override
