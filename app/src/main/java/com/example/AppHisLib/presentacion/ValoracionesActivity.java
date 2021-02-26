@@ -59,7 +59,6 @@ public class ValoracionesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valoraciones);
 
-
         llContenido = findViewById(R.id.llContenido);
         btnEnviarComentario = findViewById(R.id.btnEnviarComentario);
         btnEliminarComentario = findViewById(R.id.btnEliminarComentario);
@@ -75,15 +74,8 @@ public class ValoracionesActivity extends AppCompatActivity {
 
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        LibroBD bd = new LibroBD(this);
-        if(bd.cargarComentario(usuario) == null){
-            Toast.makeText(this, "Esta vacio", Toast.LENGTH_SHORT).show();
-        }else{
-            cargarComentario = bd.cargarComentario(usuario);
-            edtComentario.setText(cargarComentario.get("Comentario"));
-            ratingBar.setRating(Float.parseFloat(cargarComentario.get("Valor")));
-            existeComentario = true;
-        }
+        edtComentario.setText("");
+        ratingBar.setRating(0.0f);
 
         btnEliminarComentario.setOnClickListener(v -> {
             if(!existeComentario){
@@ -111,6 +103,17 @@ public class ValoracionesActivity extends AppCompatActivity {
             rvValoraciones.setLayoutManager(layoutManager2);
             rvValoraciones.setHasFixedSize(true);
             rvValoraciones.setAdapter(adapter2);
+
+            LibroBD bd = new LibroBD(this);
+            if(bd.cargarComentario(usuario,idLibro).size()==0){
+                Toast.makeText(this, "Esta vacio", Toast.LENGTH_SHORT).show();
+            }else{
+                cargarComentario = bd.cargarComentario(usuario,idLibro);
+                edtComentario.setText(cargarComentario.get("Comentario"));
+                ratingBar.setRating(Float.parseFloat(cargarComentario.get("Valor")));
+                existeComentario = true;
+            }
+
 
         }
 

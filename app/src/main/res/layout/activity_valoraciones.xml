@@ -90,7 +90,7 @@
                     android:ems="10"
                     android:inputType="text"
                     android:paddingLeft="10dp"
-                    android:text="Name" />
+                    android:text="" />
 
                 <RatingBar
                     android:id="@+id/ratingBar"

@@ -44,7 +44,6 @@ public class AdaptadorValoraciones extends RecyclerView.Adapter<AdaptadorValorac
 
         Toast.makeText(contexto, "Comentario: "+comentario+" Valor: "+valor, Toast.LENGTH_SHORT).show();
 
-
         holder.txtComentario.setText(comentario);
         holder.ratingBar.setRating(Float.parseFloat(valor));
 

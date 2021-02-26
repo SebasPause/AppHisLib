@@ -137,6 +137,7 @@ public class LibroBD extends SQLiteOpenHelper {
                                         valoresValoraciones.put(ConstantesBD.VA_USUARIO,ds5.getKey());
                                         valoresValoraciones.put(ConstantesBD.VA_COMENTARIO,ds5.child("Comentario").getValue(String.class));
                                         valoresValoraciones.put(ConstantesBD.VA_VALOR,ds5.child("Valor").getValue(String.class));
+                                        valoresValoraciones.put(ConstantesBD.VA_LIBRO,ds3.child("Id").getValue(String.class));
                                         sqDB.insert(ConstantesBD.TABLE_NAME_VALORACIONES,null,valoresValoraciones);
                                     }
                                 }
@@ -258,11 +259,11 @@ public class LibroBD extends SQLiteOpenHelper {
 
     //Metodo para cargar el comentario y la valoracion del libro el cual hemos comentado
     @RequiresApi(api = Build.VERSION_CODES.P)
-    public HashMap<String,String> cargarComentario(String usuarioActual){
+    public HashMap<String,String> cargarComentario(String usuarioActual,String idLibro){
         HashMap<String,String> comentarios = new HashMap<>();
 
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM Valoraciones WHERE USUARIO LIKE '"+usuarioActual+"'";
+        String query = "SELECT * FROM Valoraciones WHERE USUARIO LIKE '"+usuarioActual+"' AND LIBRO LIKE '"+idLibro+"'";
 
         Cursor cursor;
         cursor = db.rawQuery(query,null);

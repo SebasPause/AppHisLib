@@ -82,7 +82,7 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
         LibroBD bd = new LibroBD(contexto);
         if(bd.cargarRating(id)==0){
             //Establecemos el ratingbar a 0
-            holder.ratingBar.setRating(Float.parseFloat(valoracion));
+            holder.ratingBar.setRating(0.0f);
         }else{
             //Establezco el ratingbar con el valor obtenido
             holder.ratingBar.setRating(bd.cargarRating(id));
@@ -150,8 +150,8 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
                 }
                 //Segunda opcion es Valoraciones = 1
                 if(which == 1){
-                    Intent i=new Intent(contexto, ValoracionesActivity.class);
                     LibroBD bd = new LibroBD(contexto);
+                    Intent i=new Intent(contexto, ValoracionesActivity.class);
                     i.putExtra("IDlibro",id);
                     i.putExtra("UsuarioLibro",usuarioLibro);
                     contexto.startActivity(i);
