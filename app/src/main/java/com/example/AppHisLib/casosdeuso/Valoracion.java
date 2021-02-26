@@ -3,7 +3,7 @@ package com.example.AppHisLib.casosdeuso;
 import java.util.List;
 
 public class Valoracion {
-    private String comentario,valor;
+    public String comentario,valor;
     
     public Valoracion(){}
 
@@ -26,6 +26,14 @@ public class Valoracion {
 
     public void setValor(String valor) {
         this.valor = valor;
+    }
+
+    public List<Valoracion> getValoraciones() {
+        return valoraciones;
+    }
+
+    public void setValoraciones(List<Valoracion> valoraciones) {
+        this.valoraciones = valoraciones;
     }
 
     public List<Valoracion> valoraciones;

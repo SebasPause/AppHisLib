@@ -38,32 +38,30 @@ public class AdaptadorValoraciones extends RecyclerView.Adapter<AdaptadorValorac
 
     @Override
     public void onBindViewHolder(@NonNull ValoracionesViewHolder holder, int position) {
+        String comentario = valoraciones.get(position).comentario;
+        String valor = valoraciones.get(position).valor;
+
+        holder.txtComentario.setText(comentario);
+        holder.ratingBar.setRating(Float.parseFloat(valor));
 
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return valoraciones.size();
     }
 
     public class ValoracionesViewHolder extends  RecyclerView.ViewHolder{
-        CardView cvListaLibrosPublicados;
-        ImageButton imagenOpciones;
+        CardView cvListaValoraciones;
         RatingBar ratingBar;
-        ImageView imagenListaLibros;
-        TextView txtAutor, txtDescripcion, txtGenero,txtFechaPublicado;
+        TextView txtComentario;
 
 
         public ValoracionesViewHolder(@NonNull View itemView) {
             super(itemView);
-            cvListaLibrosPublicados = (CardView)itemView.findViewById(R.id.cvListaLibrosPublicados);
-            imagenOpciones = (ImageButton)itemView.findViewById(R.id.imagen_opciones);
+            cvListaValoraciones = (CardView)itemView.findViewById(R.id.cvListaValoraciones);
             ratingBar = (RatingBar)itemView.findViewById(R.id.ratingBar);
-            imagenListaLibros = (ImageView)itemView.findViewById(R.id.imgListaLibros);
-            txtAutor = (TextView)itemView.findViewById(R.id.txtAutor);
-            txtDescripcion = (TextView)itemView.findViewById(R.id.txtDescripcion);
-            txtGenero = (TextView)itemView.findViewById(R.id.txtGenero);
-            txtFechaPublicado = (TextView)itemView.findViewById(R.id.txtFechaPublicado);
+            txtComentario = (TextView)itemView.findViewById(R.id.txtComentario);
         }
     }
 

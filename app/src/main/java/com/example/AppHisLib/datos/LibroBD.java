@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.example.AppHisLib.casosdeuso.Libros;
+import com.example.AppHisLib.casosdeuso.Valoracion;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -194,6 +195,34 @@ public class LibroBD extends SQLiteOpenHelper {
         db.close();
     }
 
+    //Metodo para obtener todas las valoraciones despues de que el metodo obtenerDatos() haya sido ejecutado
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    public ArrayList<Valoracion> devolverValoraciones(String id){
+        ArrayList<Valoracion> valoraciones = new ArrayList<>();
+
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM "+ConstantesBD.TABLE_NAME_VALORACIONES+ " WHERE ID_VALORACIONES LIKE '"+id+"'";
+
+        Cursor cursor;
+        cursor = db.rawQuery(query,null);
+        CursorWindow cursorWindow = new CursorWindow("test",500000000);
+        AbstractWindowedCursor ac = (AbstractWindowedCursor) cursor;
+        ac.setWindow(cursorWindow);
+
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+            do{
+                valoraciones.add(new Valoracion(
+                        cursor.getString(cursor.getColumnIndex(ConstantesBD.VA_COMENTARIO)),
+                        cursor.getString(cursor.getColumnIndex(ConstantesBD.VA_VALOR))
+                ));
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return valoraciones;
+    }
 
     //cargarPaginasLibro
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -227,6 +256,34 @@ public class LibroBD extends SQLiteOpenHelper {
     }
 
     //Metodo para obtener los comentarios y valoraciones del libro requerido
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    public HashMap<String,String> cargarComentarios(String id){
+        HashMap<String,String> comentarios = new HashMap<>();
 
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM Valoraciones WHERE ID_VALORACIONES LIKE '"+id+"'";
+
+        Cursor cursor;
+        cursor = db.rawQuery(query,null);
+        CursorWindow cursorWindow = new CursorWindow("test",500000000);
+        AbstractWindowedCursor ac = (AbstractWindowedCursor) cursor;
+        ac.setWindow(cursorWindow);
+
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+            do{
+                String comentario = cursor.getString(cursor.getColumnIndex(ConstantesBD.VA_COMENTARIO));
+                String valor = cursor.getString(cursor.getColumnIndex(ConstantesBD.VA_VALOR));;
+                comentarios.put(comentario,valor);
+                System.out.println("Comentario: "+comentario+" Valor: "+valor);
+            }while(cursor.moveToNext());
+        }
+        System.out.println("Contenido del hashmap: "+comentarios.toString());
+
+        cursor.close();
+        db.close();
+
+        return comentarios;
+    }
 
 }

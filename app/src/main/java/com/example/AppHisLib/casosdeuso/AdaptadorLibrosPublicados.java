@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.datos.ConstantesBD;
+import com.example.AppHisLib.datos.LibroBD;
 import com.example.AppHisLib.presentacion.AnadirLibroActivity;
 import com.example.AppHisLib.presentacion.EscribirLibroActivity;
 import com.example.AppHisLib.presentacion.LibrosActivity;
@@ -40,6 +41,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLibrosPublicados.LibrosPublicadosViewHolder> {
@@ -126,6 +128,7 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
         final AlertDialog.Builder builder = new AlertDialog.Builder(contexto);
         builder.setTitle("Selecciona una opción");
         builder.setItems(opciones, new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Primera opcion es Ver Libro = 0
@@ -138,6 +141,8 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
                 //Segunda opcion es Valoraciones = 1
                 if(which == 1){
                     Intent i=new Intent(contexto, ValoracionesActivity.class);
+                    LibroBD bd = new LibroBD(contexto);
+                    i.putExtra("IDlibro",id);
                     contexto.startActivity(i);
                 }
             }
