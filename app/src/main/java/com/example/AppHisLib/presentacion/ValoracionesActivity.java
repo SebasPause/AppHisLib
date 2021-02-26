@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,13 +43,15 @@ public class ValoracionesActivity extends AppCompatActivity {
     List<Valoracion> listaValoraciones;
     LibroBD bd;
     LinearLayout llContenido;
-    Button btnEnviarComentario;
+    Button btnEnviarComentario,btnEliminarComentario;
     private String usuario;
     String usuarioLibro;
     String idLibro;
     DatabaseReference myRef;
     EditText edtComentario;
     RatingBar ratingBar;
+    HashMap<String,String> cargarComentario;
+    boolean existeComentario = false;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -58,6 +62,7 @@ public class ValoracionesActivity extends AppCompatActivity {
 
         llContenido = findViewById(R.id.llContenido);
         btnEnviarComentario = findViewById(R.id.btnEnviarComentario);
+        btnEliminarComentario = findViewById(R.id.btnEliminarComentario);
         edtComentario = findViewById(R.id.edtComentario);
         ratingBar = findViewById(R.id.ratingBar);
 
@@ -68,13 +73,36 @@ public class ValoracionesActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
+        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        LibroBD bd = new LibroBD(this);
+        if(bd.cargarComentario(usuario) == null){
+            Toast.makeText(this, "Esta vacio", Toast.LENGTH_SHORT).show();
+        }else{
+            cargarComentario = bd.cargarComentario(usuario);
+            edtComentario.setText(cargarComentario.get("Comentario"));
+            ratingBar.setRating(Float.parseFloat(cargarComentario.get("Valor")));
+            existeComentario = true;
+        }
+
+        btnEliminarComentario.setOnClickListener(v -> {
+            if(!existeComentario){
+                Toast.makeText(this, "No has comentado en este libro", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "Comentario borrado con exito", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ValoracionesActivity.this,ContentMainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
         Bundle extras = getIntent().getExtras();
         if(extras==null){
             //nada
         }else{
             idLibro = extras.getString("IDlibro");
             usuarioLibro = extras.getString("UsuarioLibro");
-            LibroBD bd = new LibroBD(this);
+            bd = new LibroBD(this);
             listaValoraciones = bd.devolverValoraciones(idLibro);
 
             rvValoraciones = findViewById(R.id.rvValoraciones);

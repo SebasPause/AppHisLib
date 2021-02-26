@@ -258,11 +258,11 @@ public class LibroBD extends SQLiteOpenHelper {
 
     //Metodo para obtener los comentarios y valoraciones del libro requerido
     @RequiresApi(api = Build.VERSION_CODES.P)
-    public HashMap<String,String> cargarComentarios(String id){
+    public HashMap<String,String> cargarComentario(String usuarioActual){
         HashMap<String,String> comentarios = new HashMap<>();
 
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM Valoraciones WHERE ID_VALORACIONES LIKE '"+id+"'";
+        String query = "SELECT * FROM Valoraciones WHERE USUARIO LIKE '"+usuarioActual+"'";
 
         Cursor cursor;
         cursor = db.rawQuery(query,null);
@@ -275,7 +275,8 @@ public class LibroBD extends SQLiteOpenHelper {
             do{
                 String comentario = cursor.getString(cursor.getColumnIndex(ConstantesBD.VA_COMENTARIO));
                 String valor = cursor.getString(cursor.getColumnIndex(ConstantesBD.VA_VALOR));;
-                comentarios.put(comentario,valor);
+                comentarios.put("Comentario",comentario);
+                comentarios.put("Valor",valor);
                 System.out.println("Comentario: "+comentario+" Valor: "+valor);
             }while(cursor.moveToNext());
         }
