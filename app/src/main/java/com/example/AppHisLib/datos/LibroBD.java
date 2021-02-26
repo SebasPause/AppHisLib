@@ -93,10 +93,14 @@ public class LibroBD extends SQLiteOpenHelper {
                     //Insertar en la tabla de usuarios
                     valoresUsuarios.put(ConstantesBD.U_USUARIO,ds.getKey());
                     sqDB.insert(ConstantesBD.TABLE_NAME_USUARIO,null,valoresUsuarios);
+                    onUpgrade(getWritableDatabase(),1,2);
+
 
                     //Insertar en la tabla de perfil
                     myRef = db.getReference("Usuarios").child(ds.getKey());
+                    System.out.println("Usuarios: "+myRef.getKey());
                     for(DataSnapshot ds2 : snapshot.getChildren()) {
+                        System.out.println("Children de usuario: "+ds2);
                         //Guardo los datos de todos los perfiles por si mas adelante quiero hacer algo con ellos
                         valoresUsuarios.put(ConstantesBD.ID_PERFIL,"1");
                         valoresPerfil.put(ConstantesBD.ID_PERFIL,"1");
@@ -143,7 +147,7 @@ public class LibroBD extends SQLiteOpenHelper {
                                 }
 
                             }
-                        }
+                        } //acaba el for
 
                     }
 

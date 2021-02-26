@@ -1,6 +1,7 @@
 package com.example.AppHisLib.presentacion;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -95,12 +96,21 @@ public class PerfilActivity extends BaseActivity implements Serializable {
 
     public void downloadSetImage(){
         mStorage = FirebaseStorage.getInstance();
-        storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
-        storageRef.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(PerfilActivity.this)
-                .load(uri)
-                .fitCenter()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
-                .into(imgEditarPerfil));
+        if(mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg")==null){
+            uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                    + "://" + this.getResources().getResourcePackageName(R.drawable.ic_person)
+                    + '/' + this.getResources().getResourceTypeName(R.drawable.ic_person)
+                    + '/' + this.getResources().getResourceEntryName(R.drawable.ic_person)
+            );
+            imgEditarPerfil.setImageURI(uri);
+        }else{
+            storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
+            storageRef.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(PerfilActivity.this)
+                    .load(uri)
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                    .into(imgEditarPerfil));
+        }
     }
 
     void selectedBottomNavigationBarItem(int itemId){

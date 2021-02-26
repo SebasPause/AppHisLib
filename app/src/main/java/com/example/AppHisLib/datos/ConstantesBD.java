@@ -94,7 +94,7 @@ public class ConstantesBD {
 
     //Codigo de creacion de la tabla de Valoraciones
     public static final String CREATE_TABLE_VALORACIONES = "CREATE TABLE "+ TABLE_NAME_VALORACIONES + "("
-            + L_ID_VALORACIONES + " TEXT PRIMARY KEY UNIQUE, "
+            + L_ID_VALORACIONES + " TEXT, "
             + VA_COMENTARIO + " TEXT, "
             + VA_VALOR + " TEXT, "
             + VA_USUARIO + " TEXT, "
