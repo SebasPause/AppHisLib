@@ -64,6 +64,14 @@ public class PerfilActivity extends BaseActivity implements Serializable {
         txtDescripcion = (TextView)findViewById(R.id.txtDescripcion);
         imgEditarPerfil = (ImageView)findViewById(R.id.imgEditarPerfil);
 
+        uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                + "://" + this.getResources().getResourcePackageName(R.drawable.ic_person)
+                + '/' + this.getResources().getResourceTypeName(R.drawable.ic_person)
+                + '/' + this.getResources().getResourceEntryName(R.drawable.ic_person)
+        );
+        imgEditarPerfil.setImageURI(uri);
+
+
         btnNavegacion = (BottomNavigationView)findViewById(R.id.btnNavegacion);
 
         btnNavegacion.setOnNavigationItemSelectedListener(this);
@@ -96,13 +104,8 @@ public class PerfilActivity extends BaseActivity implements Serializable {
 
     public void downloadSetImage(){
         mStorage = FirebaseStorage.getInstance();
-        if(mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg")==null){
-            uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                    + "://" + this.getResources().getResourcePackageName(R.drawable.ic_person)
-                    + '/' + this.getResources().getResourceTypeName(R.drawable.ic_person)
-                    + '/' + this.getResources().getResourceEntryName(R.drawable.ic_person)
-            );
-            imgEditarPerfil.setImageURI(uri);
+        if(!mStorage.getReference().child("Imagenes").getPath().contains(usuario)){
+            //nada
         }else{
             storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
             storageRef.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(PerfilActivity.this)
@@ -144,12 +147,20 @@ public class PerfilActivity extends BaseActivity implements Serializable {
             lanzarEditarPerfil(null);
             return true;
         }
+        if(id == R.id.btnCerrarSesion){
+            Toast.makeText(this, "Vuelva pronto", Toast.LENGTH_SHORT).show();
+            FirebaseAuth auth= FirebaseAuth.getInstance();
+            auth.signOut();
+            finish();
+            System.exit(0);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     private void lanzarEditarPerfil(View view) {
         Intent intent = new Intent(this, EditarPerfilActivity.class);
-
         startActivity(intent);
     }
 

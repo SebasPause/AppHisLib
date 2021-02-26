@@ -6,7 +6,7 @@
         app:showAsAction="never"
         android:id="@+id/btnEditarPerfil"/>
 
-    <item android:title="Compartir Perfil"
+    <item android:title="Cerrar Sesion"
         app:showAsAction="never"
-        android:id="@+id/btnCompartirPerfil"/>
+        android:id="@+id/btnCerrarSesion"/>
 </menu>

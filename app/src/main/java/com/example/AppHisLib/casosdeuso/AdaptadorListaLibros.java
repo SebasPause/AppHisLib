@@ -96,7 +96,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
         holder.txtAutor.setText(autor);
         holder.txtDescripcion.setText(descripcion);
         holder.txtGenero.setText(genero);
-        holder.imagenListaLibros.setImageURI(uri);
+        //holder.imagenListaLibros.setImageURI(uri);
 
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
 

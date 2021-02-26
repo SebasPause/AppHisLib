@@ -79,18 +79,6 @@ public class ValoracionesActivity extends AppCompatActivity {
         edtComentario.setText("");
         ratingBar.setRating(0.0f);
 
-        btnEliminarComentario.setOnClickListener(v -> {
-            if(!existeComentario){
-                Toast.makeText(this, "No has comentado en este libro", Toast.LENGTH_SHORT).show();
-            }else{
-
-                Toast.makeText(this, "Comentario borrado con exito", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(ValoracionesActivity.this,ContentMainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-
         Bundle extras = getIntent().getExtras();
         if(extras==null){
             //nada
@@ -127,12 +115,8 @@ public class ValoracionesActivity extends AppCompatActivity {
             myRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(usuarioLibro).child("Libros").child(idLibro).child("Valoraciones");
 
             LibroBD bd = new LibroBD(this);
-
             List<String> usuarios = new ArrayList<>();
-
             usuarios = bd.devolverUsuarios();
-
-            System.out.println("Usuarios: "+usuarios.toString());
 
             for(int i=0;i<usuarios.size();i++){
                 if(usuarios.get(i).equals(usuario)){
@@ -148,11 +132,40 @@ public class ValoracionesActivity extends AppCompatActivity {
 
                 myRef.child(usuario).updateChildren(hopperUpdates);
                 Toast.makeText(this, "Comentario añadido", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ValoracionesActivity.this,ContentMainActivity.class);
+                startActivity(intent);
             }else{
                 Toast.makeText(this, "Ya has echo un comentario en este libro", Toast.LENGTH_SHORT).show();
             }
 
         }); //fin btnEnviarComentario
+
+        btnEliminarComentario.setOnClickListener(v -> {
+            LibroBD bd = new LibroBD(this);
+            List<String> usuarios = new ArrayList<>();
+            usuarios = bd.devolverUsuarios();
+
+            usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            myRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(usuarioLibro).child("Libros").child(idLibro).child("Valoraciones");
+
+            for(int i=0;i<usuarios.size();i++){
+                if(usuarios.get(i).equals(usuario)){
+                    existeUsuario = true;
+                }
+            }
+
+            if(existeUsuario){
+                myRef.child(usuario).removeValue();
+                Toast.makeText(this, "Comentario borrado con exito", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ValoracionesActivity.this,ContentMainActivity.class);
+                startActivity(intent);
+            }else{
+                Toast.makeText(this, "No has echo ningun comentario en este libro", Toast.LENGTH_SHORT).show();
+            }
+
+
+        }); //fin btnEliminarComentario
+
 
     }
 

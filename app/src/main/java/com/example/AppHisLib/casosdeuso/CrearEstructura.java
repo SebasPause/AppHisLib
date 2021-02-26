@@ -51,8 +51,8 @@ public class CrearEstructura {
                     myRef.child(usuario).setValue(usuario);
                     //Hijo de usuario
                     myRef.child(usuario).child("Perfil").setValue("String");
-                    myRef.child(usuario).child("Perfil").child("Autor").setValue("");
-                    myRef.child(usuario).child("Perfil").child("Descripcion").setValue("");
+                    myRef.child(usuario).child("Perfil").child("Autor").setValue("Autor");
+                    myRef.child(usuario).child("Perfil").child("Descripcion").setValue("Descripción Max 180 caracteres.");
                     myRef.child(usuario).child("Perfil").child("Foto").setValue("");
                     myRef.child(usuario).child("Perfil").child("Edad").setValue("");
                     //Hijo de usuario

@@ -171,18 +171,22 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
     public void downloadSetImage(){
         mStorage = FirebaseStorage.getInstance();
-        storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
-        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri1) {
-                Glide.with(EditarPerfilActivity.this)
-                        .load(uri1)
-                        .fitCenter()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
-                        .into(imgEditarPerfil);
-                uri = uri1;
-            }
-        });
+        if(!mStorage.getReference().child("Imagenes").getPath().contains(usuario)){
+            //nada
+        }else{
+            storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
+            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri1) {
+                    Glide.with(EditarPerfilActivity.this)
+                            .load(uri1)
+                            .fitCenter()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                            .into(imgEditarPerfil);
+                    uri = uri1;
+                }
+            });
+        }
     }
 
     //Para volver atras
