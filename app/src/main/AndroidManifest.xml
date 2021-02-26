@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppHisLib">
-        <activity android:name=".presentacion.EscribirLibroActivity"></activity>
+        <activity android:name=".presentacion.ValoracionesActivity"></activity>
+        <activity android:name=".presentacion.EscribirLibroActivity" />
         <activity android:name=".presentacion.AnadirLibroActivity" />
         <activity android:name=".presentacion.BaseActivity" />
         <activity

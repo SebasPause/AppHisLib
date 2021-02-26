@@ -32,6 +32,7 @@ import com.example.AppHisLib.datos.ConstantesBD;
 import com.example.AppHisLib.presentacion.AnadirLibroActivity;
 import com.example.AppHisLib.presentacion.EscribirLibroActivity;
 import com.example.AppHisLib.presentacion.LibrosActivity;
+import com.example.AppHisLib.presentacion.ValoracionesActivity;
 import com.example.AppHisLib.presentacion.VerLibroActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -127,11 +128,16 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
         builder.setItems(opciones, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //Primera opcion es 0
+                //Primera opcion es Ver Libro = 0
                 if(which == 0){
                     Intent i=new Intent(contexto, VerLibroActivity.class);
                     i.putExtra("LibroPublicado",true);
                     i.putExtra("IdLibro",id);
+                    contexto.startActivity(i);
+                }
+                //Segunda opcion es Valoraciones = 1
+                if(which == 1){
+                    Intent i=new Intent(contexto, ValoracionesActivity.class);
                     contexto.startActivity(i);
                 }
             }

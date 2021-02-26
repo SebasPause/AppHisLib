@@ -132,9 +132,9 @@ public class LibroBD extends SQLiteOpenHelper {
 
                                 if(ds3.child("Valoraciones").hasChildren()){
                                     for(DataSnapshot ds5 : ds3.child("Valoraciones").getChildren()){
-                                        valoresValoraciones.put(ConstantesBD.L_ID_VALORACIONES,"1");
+                                        valoresValoraciones.put(ConstantesBD.L_ID_VALORACIONES,ds3.getKey());
                                         valoresValoraciones.put(ConstantesBD.VA_COMENTARIO,ds5.child("Comentario").getValue(String.class));
-                                        valoresValoraciones.put(ConstantesBD.VA_VALOR,ds5.child("Valor").getValue(Float.class));
+                                        valoresValoraciones.put(ConstantesBD.VA_VALOR,ds5.child("Valor").getValue(String.class));
                                         sqDB.insert(ConstantesBD.TABLE_NAME_VALORACIONES,null,valoresValoraciones);
                                     }
                                 }
@@ -225,6 +225,8 @@ public class LibroBD extends SQLiteOpenHelper {
 
         return paginasLibro;
     }
+
+    //Metodo para obtener los comentarios y valoraciones del libro requerido
 
 
 }
