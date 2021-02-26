@@ -64,6 +64,7 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
         return librospublicadosViewHolder;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onBindViewHolder(@NonNull LibrosPublicadosViewHolder holder, int position) {
         String autor = librosPublicados.get(position).Autor;
@@ -77,11 +78,20 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
 
         uri = Uri.parse(foto);
 
+        //Para obtener la valoracion del libro publicado
+        LibroBD bd = new LibroBD(contexto);
+        if(bd.cargarRating(id)==0){
+            //Establecemos el ratingbar a 0
+            holder.ratingBar.setRating(Float.parseFloat(valoracion));
+        }else{
+            //Establezco el ratingbar con el valor obtenido
+            holder.ratingBar.setRating(bd.cargarRating(id));
+        }
+
         holder.txtAutor.setText(autor);
         holder.txtDescripcion.setText(descripcion);
         holder.txtGenero.setText(genero);
         holder.imagenListaLibros.setImageURI(uri);
-        holder.ratingBar.setRating(Float.parseFloat(valoracion));
         holder.txtFechaPublicado.setText(fechaPublicado);
 
         char charFoto = foto.charAt(0);
