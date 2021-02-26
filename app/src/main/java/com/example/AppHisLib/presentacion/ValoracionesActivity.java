@@ -30,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ public class ValoracionesActivity extends AppCompatActivity {
     RatingBar ratingBar;
     HashMap<String,String> cargarComentario;
     boolean existeComentario = false;
+    boolean existeUsuario = false;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -81,6 +83,7 @@ public class ValoracionesActivity extends AppCompatActivity {
             if(!existeComentario){
                 Toast.makeText(this, "No has comentado en este libro", Toast.LENGTH_SHORT).show();
             }else{
+
                 Toast.makeText(this, "Comentario borrado con exito", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ValoracionesActivity.this,ContentMainActivity.class);
                 startActivity(intent);
@@ -123,14 +126,27 @@ public class ValoracionesActivity extends AppCompatActivity {
             usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
             myRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(usuarioLibro).child("Libros").child(idLibro).child("Valoraciones");
 
-            if(myRef.child(usuario)==null){
-                myRef.setValue(usuario);
+            LibroBD bd = new LibroBD(this);
 
+            List<String> usuarios = new ArrayList<>();
+
+            usuarios = bd.devolverUsuarios();
+
+            System.out.println("Usuarios: "+usuarios.toString());
+
+            for(int i=0;i<usuarios.size();i++){
+                if(usuarios.get(i).equals(usuario)){
+                    existeUsuario = true;
+                }
+            }
+
+
+            if(!existeUsuario){
                 Map<String, Object> hopperUpdates = new HashMap<>();
                 hopperUpdates.put("Comentario",edtComentario.getText().toString());
                 hopperUpdates.put("Valor",String.valueOf(ratingBar.getRating()));
 
-                myRef.child(usuario).setValue(hopperUpdates);
+                myRef.child(usuario).updateChildren(hopperUpdates);
                 Toast.makeText(this, "Comentario añadido", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(this, "Ya has echo un comentario en este libro", Toast.LENGTH_SHORT).show();

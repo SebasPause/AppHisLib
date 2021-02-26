@@ -28,6 +28,7 @@ import org.w3c.dom.ls.LSOutput;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class LibroBD extends SQLiteOpenHelper {
 
@@ -94,7 +95,6 @@ public class LibroBD extends SQLiteOpenHelper {
                     valoresUsuarios.put(ConstantesBD.U_USUARIO,ds.getKey());
                     sqDB.insert(ConstantesBD.TABLE_NAME_USUARIO,null,valoresUsuarios);
                     onUpgrade(getWritableDatabase(),1,2);
-
 
                     //Insertar en la tabla de perfil
                     myRef = db.getReference("Usuarios").child(ds.getKey());
@@ -325,6 +325,38 @@ public class LibroBD extends SQLiteOpenHelper {
         rating = valores / nrDeValores;
 
         return rating;
+    }
+
+
+    //Devolver usuarios de las valoraciones
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    public List<String> devolverUsuarios(){
+        List<String> usuarios =  new ArrayList<>();
+
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM "+ConstantesBD.TABLE_NAME_VALORACIONES;
+
+        Cursor cursor;
+        cursor = db.rawQuery(query,null);
+        CursorWindow cursorWindow = new CursorWindow("test",500000000);
+        AbstractWindowedCursor ac = (AbstractWindowedCursor) cursor;
+        ac.setWindow(cursorWindow);
+
+        float valores = 0.0f;
+        int nrDeValores = 0;
+
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+            do{
+                String usuario = cursor.getString(cursor.getColumnIndex(ConstantesBD.VA_USUARIO));
+                usuarios.add(usuario);
+            }while(cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return usuarios;
     }
 
 
