@@ -1,5 +1,6 @@
 package com.example.AppHisLib.presentacion;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,14 +9,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.Toast;
 
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.AdaptadorLibrosPublicados;
 import com.example.AppHisLib.casosdeuso.AdaptadorValoraciones;
 import com.example.AppHisLib.casosdeuso.Valoracion;
 import com.example.AppHisLib.datos.LibroBD;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ValoracionesActivity extends AppCompatActivity {
 
@@ -25,12 +40,28 @@ public class ValoracionesActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager2;
     List<Valoracion> listaValoraciones;
     LibroBD bd;
+    LinearLayout llContenido;
+    Button btnEnviarComentario;
+    private String usuario;
+    String usuarioLibro;
+    String idLibro;
+    DatabaseReference myRef;
+    EditText edtComentario;
+    RatingBar ratingBar;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_valoraciones);
+
+
+        llContenido = findViewById(R.id.llContenido);
+        btnEnviarComentario = findViewById(R.id.btnEnviarComentario);
+        edtComentario = findViewById(R.id.edtComentario);
+        ratingBar = findViewById(R.id.ratingBar);
+
+        llContenido.setVisibility(View.VISIBLE);
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Valoraciones");
@@ -41,13 +72,11 @@ public class ValoracionesActivity extends AppCompatActivity {
         if(extras==null){
             //nada
         }else{
-            String idLibro = extras.getString("IDlibro");
+            idLibro = extras.getString("IDlibro");
+            usuarioLibro = extras.getString("UsuarioLibro");
             LibroBD bd = new LibroBD(this);
             listaValoraciones = bd.devolverValoraciones(idLibro);
         }
-
-
-
 
         rvValoraciones = findViewById(R.id.rvValoraciones);
         adapter2 = new AdaptadorValoraciones(ValoracionesActivity.this,listaValoraciones);
@@ -56,6 +85,55 @@ public class ValoracionesActivity extends AppCompatActivity {
         rvValoraciones.setHasFixedSize(true);
         rvValoraciones.setAdapter(adapter2);
 
+
+        btnEnviarComentario.setOnClickListener(v -> {
+            llContenido.setVisibility(View.GONE);
+
+            usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            myRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(usuarioLibro).child("Libros").child(idLibro).child("Valoraciones");
+
+            if(myRef.child(usuario)==null){
+                myRef.setValue(usuario);
+
+                Map<String, Object> hopperUpdates = new HashMap<>();
+                hopperUpdates.put("Comentario",edtComentario.getText().toString());
+                hopperUpdates.put("Valor",String.valueOf(ratingBar.getRating()));
+
+                myRef.child(usuario).setValue(hopperUpdates);
+                Toast.makeText(this, "Comentario añadido", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "Ya has echo un comentario en este libro", Toast.LENGTH_SHORT).show();
+            }
+
+
+
+            /*
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot ds : snapshot.getChildren()){
+                        if(ds.hasChild(usuario)){
+                            Toast.makeText(ValoracionesActivity.this, "Ya has comentado este libro", Toast.LENGTH_SHORT).show();
+                        }else{
+                            myRef.setValue(usuario);
+
+                            Map<String, Object> hopperUpdates = new HashMap<>();
+                            hopperUpdates.put("Comentario",edtComentario.getText().toString());
+                            hopperUpdates.put("Valor",String.valueOf(ratingBar.getRating()));
+
+                            myRef.child(usuario).setValue(hopperUpdates);
+                            System.out.println("He entrado");
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });*/
+
+        }); //fin btnEnviarComentario
 
     }
 

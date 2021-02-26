@@ -134,8 +134,11 @@ public class LibroBD extends SQLiteOpenHelper {
                                 if(ds3.child("Valoraciones").hasChildren()){
                                     for(DataSnapshot ds5 : ds3.child("Valoraciones").getChildren()){
                                         valoresValoraciones.put(ConstantesBD.L_ID_VALORACIONES,ds3.getKey());
-                                        valoresValoraciones.put(ConstantesBD.VA_COMENTARIO,ds5.child("Comentario").getValue(String.class));
-                                        valoresValoraciones.put(ConstantesBD.VA_VALOR,ds5.child("Valor").getValue(String.class));
+                                        valoresValoraciones.put(ConstantesBD.VA_USUARIO,ds5.getKey());
+                                        for(DataSnapshot ds6 : ds5.getChildren()){
+                                            valoresValoraciones.put(ConstantesBD.VA_COMENTARIO,ds6.child("Comentario").getValue(String.class));
+                                            valoresValoraciones.put(ConstantesBD.VA_VALOR,ds6.child("Valor").getValue(String.class));
+                                        }
                                         sqDB.insert(ConstantesBD.TABLE_NAME_VALORACIONES,null,valoresValoraciones);
                                     }
                                 }

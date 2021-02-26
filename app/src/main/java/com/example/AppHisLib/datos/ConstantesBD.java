@@ -43,9 +43,10 @@ public class ConstantesBD {
     public static final String PA_NUMERO_PAGINA = "NUMERO_PAGINA";
     public static final String PA_CONTENIDO = "CONTENIDO";
 
-    //Nombre de campos de la tabla Paginas
+    //Nombre de campos de la tabla Valoraciones
     public static final String VA_COMENTARIO = "COMENTARIO";
     public static final String VA_VALOR = "VALOR";
+    public static final String VA_USUARIO = "USUARIO";
 
 
 
@@ -95,7 +96,8 @@ public class ConstantesBD {
     public static final String CREATE_TABLE_VALORACIONES = "CREATE TABLE "+ TABLE_NAME_VALORACIONES + "("
             + L_ID_VALORACIONES + " TEXT PRIMARY KEY UNIQUE, "
             + VA_COMENTARIO + " TEXT, "
-            + VA_VALOR + " TEXT "
+            + VA_VALOR + " TEXT, "
+            + VA_USUARIO + " TEXT "
             + ")";
 
 

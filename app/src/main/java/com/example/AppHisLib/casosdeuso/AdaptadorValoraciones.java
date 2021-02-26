@@ -41,8 +41,8 @@ public class AdaptadorValoraciones extends RecyclerView.Adapter<AdaptadorValorac
         String comentario = valoraciones.get(position).comentario;
         String valor = valoraciones.get(position).valor;
 
-        holder.txtComentario.setText(comentario);
-        holder.ratingBar.setRating(Float.parseFloat(valor));
+        //holder.txtComentario.setText(comentario);
+        //holder.ratingBar.setRating(Float.parseFloat(valor));
 
     }
 

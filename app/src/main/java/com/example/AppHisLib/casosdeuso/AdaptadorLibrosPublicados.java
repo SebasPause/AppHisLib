@@ -115,13 +115,13 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
 
         //Para la imagen de opciones
         holder.imagenOpciones.setOnClickListener(v -> {
-            mostrarOpciones(""+position,id,autor,descripcion,genero,foto,valoracion);
+            mostrarOpciones(""+position,id,autor,descripcion,genero,foto,valoracion,usuarioLibro);
         });
 
         
     }
 
-    public void mostrarOpciones(String position, String id, String autor, String descripcion, String genero, String foto, String valoracion) {
+    public void mostrarOpciones(String position, String id, String autor, String descripcion, String genero, String foto, String valoracion,String usuarioLibro) {
         //Array para que aparezca en el dialogo
         String[] opciones = {"Ver Libro","Valoraciones"};
 
@@ -143,6 +143,7 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
                     Intent i=new Intent(contexto, ValoracionesActivity.class);
                     LibroBD bd = new LibroBD(contexto);
                     i.putExtra("IDlibro",id);
+                    i.putExtra("UsuarioLibro",usuarioLibro);
                     contexto.startActivity(i);
                 }
             }
