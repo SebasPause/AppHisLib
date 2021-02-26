@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -41,8 +42,11 @@ public class AdaptadorValoraciones extends RecyclerView.Adapter<AdaptadorValorac
         String comentario = valoraciones.get(position).comentario;
         String valor = valoraciones.get(position).valor;
 
-        //holder.txtComentario.setText(comentario);
-        //holder.ratingBar.setRating(Float.parseFloat(valor));
+        Toast.makeText(contexto, "Comentario: "+comentario+" Valor: "+valor, Toast.LENGTH_SHORT).show();
+
+
+        holder.txtComentario.setText(comentario);
+        holder.ratingBar.setRating(Float.parseFloat(valor));
 
     }
 

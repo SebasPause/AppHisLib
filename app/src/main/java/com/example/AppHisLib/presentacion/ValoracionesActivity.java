@@ -76,15 +76,15 @@ public class ValoracionesActivity extends AppCompatActivity {
             usuarioLibro = extras.getString("UsuarioLibro");
             LibroBD bd = new LibroBD(this);
             listaValoraciones = bd.devolverValoraciones(idLibro);
+
+            rvValoraciones = findViewById(R.id.rvValoraciones);
+            adapter2 = new AdaptadorValoraciones(ValoracionesActivity.this,listaValoraciones);
+            layoutManager2 = new LinearLayoutManager(ValoracionesActivity.this);
+            rvValoraciones.setLayoutManager(layoutManager2);
+            rvValoraciones.setHasFixedSize(true);
+            rvValoraciones.setAdapter(adapter2);
+
         }
-
-        rvValoraciones = findViewById(R.id.rvValoraciones);
-        adapter2 = new AdaptadorValoraciones(ValoracionesActivity.this,listaValoraciones);
-        layoutManager2 = new LinearLayoutManager(ValoracionesActivity.this);
-        rvValoraciones.setLayoutManager(layoutManager2);
-        rvValoraciones.setHasFixedSize(true);
-        rvValoraciones.setAdapter(adapter2);
-
 
         btnEnviarComentario.setOnClickListener(v -> {
             llContenido.setVisibility(View.GONE);
@@ -104,34 +104,6 @@ public class ValoracionesActivity extends AppCompatActivity {
             }else{
                 Toast.makeText(this, "Ya has echo un comentario en este libro", Toast.LENGTH_SHORT).show();
             }
-
-
-
-            /*
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot ds : snapshot.getChildren()){
-                        if(ds.hasChild(usuario)){
-                            Toast.makeText(ValoracionesActivity.this, "Ya has comentado este libro", Toast.LENGTH_SHORT).show();
-                        }else{
-                            myRef.setValue(usuario);
-
-                            Map<String, Object> hopperUpdates = new HashMap<>();
-                            hopperUpdates.put("Comentario",edtComentario.getText().toString());
-                            hopperUpdates.put("Valor",String.valueOf(ratingBar.getRating()));
-
-                            myRef.child(usuario).setValue(hopperUpdates);
-                            System.out.println("He entrado");
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });*/
 
         }); //fin btnEnviarComentario
 
