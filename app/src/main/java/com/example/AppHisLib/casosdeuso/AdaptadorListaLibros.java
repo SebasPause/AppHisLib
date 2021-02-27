@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -284,7 +287,6 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
         ImageView imagenListaLibros;
         TextView txtAutor, txtDescripcion, txtGenero;
 
-
         public LibrosViewHolder(@NonNull View itemView) {
             super(itemView);
             cvListaLibros = (CardView)itemView.findViewById(R.id.cvListaLibros);
@@ -294,7 +296,6 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
             txtAutor = (TextView)itemView.findViewById(R.id.txtAutor);
             txtDescripcion = (TextView)itemView.findViewById(R.id.txtDescripcion);
             txtGenero = (TextView)itemView.findViewById(R.id.txtGenero);
-
 
         }
     }

@@ -3,19 +3,19 @@ package com.example.AppHisLib.presentacion;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.AdaptadorListaLibros;
 import com.example.AppHisLib.casosdeuso.Libros;
-import com.example.AppHisLib.datos.LibroBD;
+import com.example.AppHisLib.casosdeuso.ListaLibros;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,7 +85,6 @@ public class LibrosActivity extends BaseActivity implements Serializable {
                 libros.setLayoutManager(layoutManager);
                 libros.setHasFixedSize(true);
                 libros.setAdapter(adapter);
-
             }
 
             @Override
