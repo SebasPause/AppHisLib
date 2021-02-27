@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +23,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.DatosPerfil;
 import com.example.AppHisLib.casosdeuso.Libros;
+import com.example.AppHisLib.datos.LibroBD;
 import com.google.android.gms.common.util.JsonUtils;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,9 +35,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
+import java.sql.SQLOutput;
 import java.util.List;
 
 public class PerfilActivity extends BaseActivity implements Serializable {
@@ -42,6 +47,7 @@ public class PerfilActivity extends BaseActivity implements Serializable {
     ImageView imgEditarPerfil;
     TextView txtAutor,txtDescripcion;
     BottomNavigationView btnNavegacion;
+    RatingBar ratingBar;
     private String usuario;
     DatabaseReference myRef;
     FirebaseStorage mStorage;
@@ -50,19 +56,26 @@ public class PerfilActivity extends BaseActivity implements Serializable {
     Uri uri;
     ActionBar actionBar;
 
-
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.perfil);
-
         actionBar = getSupportActionBar();
         actionBar.setTitle("Perfil");
 
         txtAutor = (TextView)findViewById(R.id.txtAutor);
         txtDescripcion = (TextView)findViewById(R.id.txtDescripcion);
         imgEditarPerfil = (ImageView)findViewById(R.id.imgEditarPerfil);
+        ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+        ratingBar.setRating(0.0f);
+        ratingBar.setIsIndicator(true);
+        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        LibroBD bd = new LibroBD(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            ratingBar.setRating(bd.cargarRatingPerfil(usuario));
+        }
+
 
         uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                 + "://" + this.getResources().getResourcePackageName(R.drawable.ic_person)
@@ -71,13 +84,11 @@ public class PerfilActivity extends BaseActivity implements Serializable {
         );
         imgEditarPerfil.setImageURI(uri);
 
-
         btnNavegacion = (BottomNavigationView)findViewById(R.id.btnNavegacion);
 
         btnNavegacion.setOnNavigationItemSelectedListener(this);
 
         db = FirebaseDatabase.getInstance();
-        usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         myRef = db.getReference().child("Usuarios").child(usuario).child("Perfil");
         //Llamo al metodo de descargar y establecer su imagen correspondiente de perfil del storage de firebase
         downloadSetImage();
@@ -103,17 +114,18 @@ public class PerfilActivity extends BaseActivity implements Serializable {
     }
 
     public void downloadSetImage(){
-        mStorage = FirebaseStorage.getInstance();
-        if(!mStorage.getReference().child("Imagenes").getPath().contains(usuario)){
-            //nada
-        }else{
+            mStorage = FirebaseStorage.getInstance();
             storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
-            storageRef.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(PerfilActivity.this)
-                    .load(uri)
-                    .fitCenter()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
-                    .into(imgEditarPerfil));
-        }
+
+            if(storageRef.hashCode()<=0){
+                //nada
+            }else{
+                storageRef.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(PerfilActivity.this)
+                        .load(uri)
+                        .fitCenter()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                        .into(imgEditarPerfil));
+            }
     }
 
     void selectedBottomNavigationBarItem(int itemId){

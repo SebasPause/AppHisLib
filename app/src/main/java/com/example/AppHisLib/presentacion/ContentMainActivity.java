@@ -52,7 +52,7 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
         setContentView(R.layout.content_main);
 
         actionBar = getSupportActionBar();
-        actionBar.setTitle("Principal");
+        actionBar.setTitle("Publicaciones");
 
         Bundle extras = getIntent().getExtras();
         if(extras == null){

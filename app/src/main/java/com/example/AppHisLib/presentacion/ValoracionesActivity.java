@@ -96,7 +96,7 @@ public class ValoracionesActivity extends AppCompatActivity {
             rvValoraciones.setAdapter(adapter2);
 
             LibroBD bd = new LibroBD(this);
-            if(bd.cargarComentario(usuario,idLibro).size()==0){
+            if(bd.cargarComentario(usuario,idLibro).size()<=0){
                 Toast.makeText(this, "Esta vacio", Toast.LENGTH_SHORT).show();
             }else{
                 cargarComentario = bd.cargarComentario(usuario,idLibro);
@@ -116,7 +116,7 @@ public class ValoracionesActivity extends AppCompatActivity {
 
             LibroBD bd = new LibroBD(this);
             List<String> usuarios = new ArrayList<>();
-            usuarios = bd.devolverUsuarios();
+            usuarios = bd.devolverUsuarios(idLibro);
 
             for(int i=0;i<usuarios.size();i++){
                 if(usuarios.get(i).equals(usuario)){
@@ -143,7 +143,7 @@ public class ValoracionesActivity extends AppCompatActivity {
         btnEliminarComentario.setOnClickListener(v -> {
             LibroBD bd = new LibroBD(this);
             List<String> usuarios = new ArrayList<>();
-            usuarios = bd.devolverUsuarios();
+            usuarios = bd.devolverUsuarios(idLibro);
 
             usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
             myRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(usuarioLibro).child("Libros").child(idLibro).child("Valoraciones");

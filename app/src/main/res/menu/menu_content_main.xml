@@ -6,7 +6,7 @@
         android:id="@+id/irPrincipal"
         android:enabled="true"
         app:showAsAction="always"
-        android:title="Principal"/>
+        android:title="Publicaciones"/>
 
 
     <item

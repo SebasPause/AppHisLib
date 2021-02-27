@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gris">#C2C2C2</color>
+    <color name="morado">#650d88</color>
 </resources>

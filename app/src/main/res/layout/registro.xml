@@ -19,7 +19,8 @@
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/black"/>
 
     <TextView
         android:id="@+id/textView2"
@@ -30,13 +31,15 @@
         android:layout_marginTop="50dp"
         android:text="@string/txtCorreo"
         android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtTituloRegistro" />
 
     <EditText
         android:id="@+id/etUsReg"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginStart="48dp"
         android:layout_marginLeft="48dp"
         android:layout_marginTop="8dp"
@@ -45,7 +48,10 @@
         android:hint="@string/txtIntroduceUsuario"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="@drawable/forma_rectangulo_naranja"/>
 
     <TextView
         android:id="@+id/textView3"
@@ -56,13 +62,15 @@
         android:layout_marginTop="8dp"
         android:text="@string/txtPassword"
         android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etUsReg" />
 
     <EditText
         android:id="@+id/etConReg"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginStart="48dp"
         android:layout_marginLeft="48dp"
         android:layout_marginTop="8dp"
@@ -71,12 +79,15 @@
         android:inputType="textPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
-        android:autofillHints="" />
+        android:autofillHints=""
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="@drawable/forma_rectangulo_naranja"/>
 
     <EditText
         android:id="@+id/etRepConReg"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginStart="48dp"
         android:layout_marginLeft="48dp"
         android:layout_marginTop="8dp"
@@ -85,30 +96,39 @@
         android:inputType="textPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etConReg"
-        android:autofillHints="" />
+        android:autofillHints=""
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="@drawable/forma_rectangulo_naranja"/>
 
     <Button
         android:id="@+id/btn_Finalizar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="174dp"
+        android:layout_height="58dp"
         android:layout_marginStart="159dp"
         android:layout_marginLeft="159dp"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="159dp"
         android:layout_marginRight="159dp"
         android:text="@string/btnFinalizar"
+        app:backgroundTint="@color/morado"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etRepConReg" />
 
     <Button
         android:id="@+id/btnVolverRegistro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="162dp"
-        android:layout_marginLeft="162dp"
-        android:layout_marginTop="25dp"
+        android:layout_width="174dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="159dp"
+        android:layout_marginLeft="159dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="159dp"
+        android:layout_marginRight="159dp"
         android:text="@string/btnVolver"
+        app:backgroundTint="@color/morado"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_Finalizar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

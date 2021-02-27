@@ -48,6 +48,7 @@ public class ConstantesBD {
     public static final String VA_VALOR = "VALOR";
     public static final String VA_USUARIO = "USUARIO";
     public static final String VA_LIBRO = "LIBRO";
+    public static final String VA_USUARIOLIBRO = "USUARIOLIBRO";
 
 
     //Codigo de creacion de la tabla de Usuario
@@ -98,7 +99,8 @@ public class ConstantesBD {
             + VA_COMENTARIO + " TEXT, "
             + VA_VALOR + " TEXT, "
             + VA_USUARIO + " TEXT, "
-            + VA_LIBRO + " TEXT "
+            + VA_LIBRO + " TEXT, "
+            + VA_USUARIOLIBRO + " TEXT "
             + ")";
 
 

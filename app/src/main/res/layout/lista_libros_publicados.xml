@@ -9,22 +9,19 @@
     app:cardUseCompatPadding="true"
     android:id="@+id/cvListaLibrosPublicados">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
         <!--Para la foto -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/imagen_opciones"
-            android:layout_toLeftOf="@id/imagen_opciones"
             android:orientation="vertical"
-            android:paddingLeft="10dp">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:background="@drawable/forma_rectangulo_naranja">
 
-            /<!--Para el nombre -->
+            <!--Para el nombre -->
+
             <ImageView
                 android:id="@+id/imgListaLibros"
                 android:layout_width="132dp"
@@ -32,15 +29,25 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
-                android:src="@drawable/ic_book" />
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:src="@drawable/ic_book"
+                android:background="@drawable/forma_rectangulo_negro"
+                android:contentDescription="@string/imgLibro"/>
 
             <TextView
                 android:id="@+id/txtAutor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Autor"
-                android:textSize="18dp" />
+                android:text="@string/txtAutor"
+                android:textSize="18sp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:background="@drawable/forma_rectangulo_negro"
+                android:layout_marginEnd="10dp" />
 
             <TextView
                 android:id="@+id/txtDescripcion"
@@ -48,30 +55,63 @@
                 android:layout_height="133dp"
                 android:textColor="@color/black"
                 android:maxLength="180"
-                android:text="Descripcion Max 180 caracteres"
-                android:textSize="18dp" />
-
-            <TextView
-                android:id="@+id/txtGenero"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Genero"
-                android:textSize="18dp" />
+                android:text="@string/txtDescripcion"
+                android:textSize="18sp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:background="@drawable/forma_rectangulo_negro"
+                android:layout_marginEnd="10dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:background="@drawable/forma_rectangulo_negro"
+                android:layout_marginEnd="10dp">
+
+                <TextView
+                    android:id="@+id/textoGenero"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/txtGenero"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txtGenero"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:background="@drawable/forma_rectangulo_negro"
+                android:layout_marginEnd="10dp">
 
                 <TextView
                     android:id="@+id/txtValoracion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Valoración"
+                    android:text="@string/txtValoracion"
                     android:textColor="@color/black"
-                    android:textSize="18dp"
-                    android:layout_marginRight="20dp"/>
+                    android:textSize="18sp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp" />
 
                 <RatingBar
                     android:id="@+id/ratingBar"
@@ -83,25 +123,49 @@
                     android:rating="0" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/txtFechaPublicado"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Fecha Publicado"
-                android:textSize="18dp" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:background="@drawable/forma_rectangulo_negro"
+                android:layout_marginEnd="10dp">
+
+                <TextView
+                    android:id="@+id/textoFechaPublicado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="@string/txtFechaPublicado"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/txtFechaPublicado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text=""
+                    android:textSize="18sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/imagen_opciones"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_more"
-            tools:ignore="VectorDrawableCompat"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"/>
-    </RelativeLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/imagen_opciones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        app:backgroundTint="@color/white"
+        app:srcCompat="@drawable/ic_more_white"
+        tools:ignore="VectorDrawableCompat"
+        android:contentDescription="@string/txtFloatingActionButton"
+        android:layout_marginEnd="10dp"/>
 
 
 </androidx.cardview.widget.CardView>

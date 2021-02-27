@@ -22,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.ls.LSOutput;
 
@@ -36,6 +38,7 @@ public class LibroBD extends SQLiteOpenHelper {
     FirebaseDatabase db;
     //FirebaseFirestore ff;
     ContentValues valoresUsuarios,valoresPerfil,valoresLibros,valoresPaginas,valoresValoraciones;
+    boolean existeUsuario = false;
 
     public LibroBD(@Nullable Context context) {
         super(context, ConstantesBD.BD_NAME, null, 1);
@@ -142,6 +145,7 @@ public class LibroBD extends SQLiteOpenHelper {
                                         valoresValoraciones.put(ConstantesBD.VA_COMENTARIO,ds5.child("Comentario").getValue(String.class));
                                         valoresValoraciones.put(ConstantesBD.VA_VALOR,ds5.child("Valor").getValue(String.class));
                                         valoresValoraciones.put(ConstantesBD.VA_LIBRO,ds3.child("Id").getValue(String.class));
+                                        valoresValoraciones.put(ConstantesBD.VA_USUARIOLIBRO,ds3.child("Usuario").getValue(String.class));
                                         sqDB.insert(ConstantesBD.TABLE_NAME_VALORACIONES,null,valoresValoraciones);
                                     }
                                 }
@@ -327,14 +331,49 @@ public class LibroBD extends SQLiteOpenHelper {
         return rating;
     }
 
+    //Metodo para obtener los comentarios y valoraciones del libro requerido
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    public Float cargarRatingPerfil(String usuario){
+        Float rating = 0.0f;
+
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM "+ConstantesBD.TABLE_NAME_VALORACIONES+" WHERE USUARIOLIBRO LIKE '"+usuario+"'";
+
+        Cursor cursor;
+        cursor = db.rawQuery(query,null);
+        CursorWindow cursorWindow = new CursorWindow("test",500000000);
+        AbstractWindowedCursor ac = (AbstractWindowedCursor) cursor;
+        ac.setWindow(cursorWindow);
+
+        float valores = 0.0f;
+        int nrDeValores = 0;
+
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+            do{
+                String valor = cursor.getString(cursor.getColumnIndex(ConstantesBD.VA_VALOR));;
+                valores = valores + Float.parseFloat(valor);
+                nrDeValores += 1;
+            }while(cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        rating = valores / nrDeValores;
+
+        return rating;
+    }
+
+
 
     //Devolver usuarios de las valoraciones
     @RequiresApi(api = Build.VERSION_CODES.P)
-    public List<String> devolverUsuarios(){
+    public List<String> devolverUsuarios(String id){
         List<String> usuarios =  new ArrayList<>();
 
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM "+ConstantesBD.TABLE_NAME_VALORACIONES;
+        String query = "SELECT * FROM "+ConstantesBD.TABLE_NAME_VALORACIONES+" WHERE ID_VALORACIONES LIKE '"+id+"'";
 
         Cursor cursor;
         cursor = db.rawQuery(query,null);
@@ -358,6 +397,5 @@ public class LibroBD extends SQLiteOpenHelper {
 
         return usuarios;
     }
-
 
 }

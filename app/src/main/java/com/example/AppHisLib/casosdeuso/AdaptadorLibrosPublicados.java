@@ -103,16 +103,20 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
             //usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
             FirebaseStorage mStorage = FirebaseStorage.getInstance();
             StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuarioLibro).child("Libros").child(id).child("Libro.jpeg");
-            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(contexto)
-                            .load(uri)
-                            .fitCenter()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
-                            .into(holder.imagenListaLibros);
-                }
-            });
+            if(storageRef.hashCode()<=0){
+                //nada
+            }else{
+                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(contexto)
+                                .load(uri)
+                                .fitCenter()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                                .into(holder.imagenListaLibros);
+                    }
+                });
+            }
         }
 
         //Si clicko en un libro

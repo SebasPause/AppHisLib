@@ -1,17 +1,27 @@
 <resources>
-    <string name="app_name">AppHisLib</string>
+    <string name="app_name">Bienvenid@ a TULIB!</string>
     <string name="imgApp">ImagenApp</string>
+    <string name="imgLibro">ImagenLibro</string>
+    <string name="imgPerfil">ImagenPerfil</string>
     <string name="txtCorreo">Correo</string>
-    <string name="txtIntroduceUsuario">Introduce un usuario</string>
-    <string name="txtPassword">Contrasena</string>
-    <string name="txtIntroducePassword">Introduce contrasena</string>
-    <string name="txtRepitePassword">Repite Contrasena</string>
-    <string name="txtIntroduceRepitePassword">Vuelva a escribir la contrasena</string>
+    <string name="txtAutor">Autor</string>
+    <string name="txtDescripcion">Descripcion Max 180 caracteres</string>
+    <string name="txtGenero">Genero: </string>
+    <string name="txtValoracion">Valoración: </string>
+    <string name="txtValoracionTotal">Valoracion Total Del Perfil</string>
+    <string name="txtFechaPublicado">Fecha publicado: </string>
+    <string name="txtFloatingActionButton">Boton</string>
+    <string name="txtIntroduceUsuario">Introduce un correo</string>
+    <string name="txtPassword">Contraseña</string>
+    <string name="txtIntroducePassword">Introduce contraseña</string>
+    <string name="txtRepitePassword">Repite Contraseña</string>
+    <string name="txtIntroduceRepitePassword">Vuelva a escribir la contraseña</string>
     <string name="btnEntrar">Entrar</string>
     <string name="btnRegistrar">Registrarse</string>
     <string name="txtRegistro">REGISTRO DE USUARIO</string>
     <string name="btnFinalizar">Finalizar</string>
     <string name="btnVolver">Volver</string>
+    <string name="btnLibro">AñadirLibro</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
