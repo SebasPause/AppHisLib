@@ -61,6 +61,10 @@ public class PerfilActivity extends BaseActivity implements Serializable {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.perfil);
+
+        /**
+         * Datos relacionados al menu superior
+         */
         actionBar = getSupportActionBar();
         actionBar.setTitle("Perfil");
 
@@ -68,15 +72,29 @@ public class PerfilActivity extends BaseActivity implements Serializable {
         txtDescripcion = (TextView)findViewById(R.id.txtDescripcion);
         imgEditarPerfil = (ImageView)findViewById(R.id.imgEditarPerfil);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+
+        /**
+         * Establezco el rating del perfil a 0
+         * e indico que solo es un indicador y que no se puede modificar manualmente
+         */
         ratingBar.setRating(0.0f);
         ratingBar.setIsIndicator(true);
+
+        /**
+         * Obtengo el usuario actual y llamo al metodo cargarRatingPerfil()
+         * para obtener la valoracion total de todos los publicados del usuario actual
+         * con el fin de poder establecer el valor del ratingBar del usuario
+         */
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
         LibroBD bd = new LibroBD(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             ratingBar.setRating(bd.cargarRatingPerfil(usuario));
         }
 
-
+        /**
+         * En caso de que el usuario no haya editado su perfil
+         * esta uri tendrá la imagen por defecto ic_person
+         */
         uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                 + "://" + this.getResources().getResourcePackageName(R.drawable.ic_person)
                 + '/' + this.getResources().getResourceTypeName(R.drawable.ic_person)
@@ -84,14 +102,22 @@ public class PerfilActivity extends BaseActivity implements Serializable {
         );
         imgEditarPerfil.setImageURI(uri);
 
+        /**
+         * Indico al menu inferior que estoy en este Activity
+         */
         btnNavegacion = (BottomNavigationView)findViewById(R.id.btnNavegacion);
-
         btnNavegacion.setOnNavigationItemSelectedListener(this);
 
         db = FirebaseDatabase.getInstance();
         myRef = db.getReference().child("Usuarios").child(usuario).child("Perfil");
-        //Llamo al metodo de descargar y establecer su imagen correspondiente de perfil del storage de firebase
+        //Llamo al metodo de descargar y para establecer su imagen correspondiente de perfil del storage de firebase
         downloadSetImage();
+
+        /**
+         * Obtengo los datos del objeto de DatosPerfil que contiene toda la informacion
+         * relacionada con el perfil del usuario actual.
+         * Establezco esos datos en los TextView correspondientes
+         */
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -108,11 +134,18 @@ public class PerfilActivity extends BaseActivity implements Serializable {
 
     }
 
+    /**
+     * Metodo para actualizar el estado del menu inferior
+     */
     private void updateNavigationBarState(){
         int actionId = getBottomNavigationMenuItemId();
         selectedBottomNavigationBarItem(actionId);
     }
 
+    /**
+     * Metodo utilizado para descargar la iamgen de perfil del Storage de firebase
+     * En caso de que no exista, se establecerá la asignada al uri
+     */
     public void downloadSetImage(){
             mStorage = FirebaseStorage.getInstance();
             storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
@@ -128,6 +161,10 @@ public class PerfilActivity extends BaseActivity implements Serializable {
             }
     }
 
+    /**
+     * Metodo para decirle al menu inferior que estamos en este Activity
+     * @param itemId
+     */
     void selectedBottomNavigationBarItem(int itemId){
         MenuItem item = btnNavegacion.getMenu().findItem(itemId);
         item.setChecked(true);
@@ -151,6 +188,14 @@ public class PerfilActivity extends BaseActivity implements Serializable {
         return true;
     }
 
+    /**
+     * Opciones del menu superior que llevan al ativity de editar el perfil
+     * o a cerrar sesion(Esta opcion puede no funcionar si se viene desde algun otro activity
+     * ya que supuestamente al cambiar de intents, su correspondiente activity deberia pasar por el onDestroy()
+     * pero esto no sucede y al hacer click en esta opcion se vuelve a ese activity)
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -171,12 +216,20 @@ public class PerfilActivity extends BaseActivity implements Serializable {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Metodo llamado para acceder al activity de editar el perfil
+     * @param view
+     */
     private void lanzarEditarPerfil(View view) {
         Intent intent = new Intent(this, EditarPerfilActivity.class);
         startActivity(intent);
     }
 
-
+    /**
+     * Opciones del menu inferior
+     * @param item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         btnNavegacion.postDelayed(() -> {

@@ -95,33 +95,38 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
             holder.ratingBar.setRating(bd.cargarRating(id));
         }
 
-
         holder.txtAutor.setText(autor);
         holder.txtDescripcion.setText(descripcion);
         holder.txtGenero.setText(genero);
-        //holder.imagenListaLibros.setImageURI(uri);
 
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         char charFoto = foto.charAt(0);
         String letra = String.valueOf(charFoto);
 
+        /**
+         * Si la letra es una a significa que la uri es la de por defecto
+         */
         if(letra.equals("a")){
             holder.imagenListaLibros.setImageURI(uri);
         }else{
             FirebaseStorage mStorage = FirebaseStorage.getInstance();
             StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Libros").child(id).child("Libro.jpeg");
-            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri1) {
-                    Glide.with(contexto)
-                            .load(uri1)
-                            .fitCenter()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
-                            .into(holder.imagenListaLibros);
-                    uri = uri1;
-                }
-            });
+            if(storageRef.hashCode()<=0){
+                //nada
+            }else {
+                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri1) {
+                        Glide.with(contexto)
+                                .load(uri1)
+                                .fitCenter()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)         //ALL or NONE as your requirement
+                                .into(holder.imagenListaLibros);
+                        uri = uri1;
+                    }
+                });
+            }
 
             ce = new CrearEstructura(contexto,usuario,myRef);
         }
@@ -158,7 +163,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
         builder.setItems(opciones, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //Primera opcion es 0
+                //Primera opcion es 0 => Ver Libro
                 if(which == 0){
                     cargarPaginas(id);
                     Toast.makeText(contexto, "Cargando Libro", Toast.LENGTH_SHORT).show();
@@ -172,6 +177,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                         }
                     }, 2000);
                 }
+                //Segunda opcion es 1 => Escribir Libro
                 else if(which == 1){
                     cargarPaginas(id);
                     Toast.makeText(contexto, "Cargando Libro", Toast.LENGTH_SHORT).show();
@@ -186,6 +192,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                         }
                     }, 2000);
                 }
+                //Tercera opcion es 2 => Editar Informacion Libro
                 else if(which == 2){
                     Intent intent = new Intent(contexto, AnadirLibroActivity.class);
                     intent.putExtra("EditarLibro",true);
@@ -194,6 +201,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                     intent.putExtra("Letra",letra);
                     contexto.startActivity(intent);
                 }
+                //Cuarta opcion es 3 => Publicar Libro
                 else if(which == 3){
                     //Para actualizar el campo Publicado del objeto libro
                     AlertDialog.Builder builderEliminar = new AlertDialog.Builder(contexto);
@@ -221,6 +229,7 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
                             });
                     builderEliminar.create().show();
                 }
+                //Quinta opcion es 4 => Eliminar Libro
                 else if(which == 4){
                     //Para eliminar una persona
                     AlertDialog.Builder builderEliminar = new AlertDialog.Builder(contexto);
@@ -244,6 +253,11 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
 
     }
 
+    /**
+     * Metodo para cargar las paginas del libro requerido
+     * @param idLibro
+     * @return
+     */
     public HashMap<String,String> cargarPaginas(String idLibro){
         db = FirebaseDatabase.getInstance();
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -259,7 +273,6 @@ public class AdaptadorListaLibros extends RecyclerView.Adapter<AdaptadorListaLib
 
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

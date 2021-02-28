@@ -36,7 +36,7 @@ import java.util.List;
 public class ContentMainActivity extends BaseActivity implements Serializable{
 
     private String usuario;
-    DatabaseReference myRef,myRef2;
+    DatabaseReference myRef;
     BottomNavigationView btnNavegacion;
     ActionBar actionBar;
     CrearEstructura ce;
@@ -56,6 +56,12 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
 
         Bundle extras = getIntent().getExtras();
         if(extras == null){
+            /**
+             * Obtengo todos los datos de la base de datos interna
+             * mediante el metodo .devolerLibros()
+             * Estos datos los guardo en un arraylist el cual se usara
+             * para crear un nuevo adaptador
+             */
             LibroBD bd = new LibroBD(this);
             List<Libros> listaLibrosPublicados = new ArrayList<>();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -68,10 +74,12 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
             librosPublicados.setLayoutManager(layoutManager2);
             librosPublicados.setHasFixedSize(true);
             librosPublicados.setAdapter(adapter2);
-            Toast.makeText(this, "Estoy aqui 1,Libros: "+listaLibrosPublicados.size(), Toast.LENGTH_SHORT).show();
-            System.out.println("Estoy aqui 1");
 
         }else{
+            /**
+             * Aqui entra siempre al inciar sesion en la aplicacion
+             * Una vez dentro de la aplicacion, ya no vuelve a pasar por aqui
+             */
             if(extras.getBoolean("LibrosPublicados")){
                 List<Libros> listaLibrosPublicados = new ArrayList<>();
                 LibroBD bd = new LibroBD(this);
@@ -79,9 +87,13 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
                     listaLibrosPublicados = bd.devolverLibros();
                 }
 
+                /**
+                 * Ya que es lo primero que se carga al iniciar sesion,es necesario crear una estructura de datos
+                 * en la base de datos externa.
+                 * El metodo crearEstructuraDatos() se encarga de realizar este paso
+                 */
                 usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
-                myRef2 = FirebaseDatabase.getInstance().getReference("Usuarios");
                 ce = new CrearEstructura(ContentMainActivity.this,usuario,myRef);
                 ce.crearEstructuraDatos();
 
@@ -91,11 +103,12 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
                 librosPublicados.setLayoutManager(layoutManager2);
                 librosPublicados.setHasFixedSize(true);
                 librosPublicados.setAdapter(adapter2);
-                Toast.makeText(this, "Estoy aqui 2", Toast.LENGTH_SHORT).show();
-                System.out.println("Estoy aqui 2");
-
             }else{
-                //nada
+                /**
+                 * Utilizado en caso de que ocurra algo inesperado
+                 * se borran los libros actuales que hay en la tabla de libros
+                 * y se vuelven a cargar
+                 */
                 LibroBD bd = new LibroBD(this);
                 List<Libros> listaLibrosPublicados = new ArrayList<>();
                 bd.borrarLibros();
@@ -109,20 +122,23 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
                 librosPublicados.setLayoutManager(layoutManager2);
                 librosPublicados.setHasFixedSize(true);
                 librosPublicados.setAdapter(adapter2);
-                Toast.makeText(this, "Estoy aqui 3", Toast.LENGTH_SHORT).show();
-                System.out.println("Estoy aqui 3");
             }
         }
 
-
-
+        /**
+         * Hacemos que el menu inferior sepa que estamos en este Activity
+         */
         btnNavegacion = (BottomNavigationView)findViewById(R.id.btnNavegacion);
-
         btnNavegacion.setOnNavigationItemSelectedListener(this);
 
 
     } //fin onCreate
 
+    /**
+     * Opciones del menu inferior
+     * @param item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         btnNavegacion.postDelayed(() -> {
@@ -162,10 +178,20 @@ public class ContentMainActivity extends BaseActivity implements Serializable{
         return true;
     }
 
+    /**
+     * Permite averiguar que item se selecciono del menu superior
+     * del activity para poder actualizar los libros publicados en este caso
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
+        /**
+         * Lo que hace es llamar al metodo unUpgrade() para resetear la base de datos interna
+         * y con el metodo obtenerDatos() inserto todos los datos en la base de datos interna
+         */
         if(id == R.id.btnActualizarLibros){
             Toast.makeText(ContentMainActivity.this, "Actualizando la lista de libros publicados", Toast.LENGTH_SHORT).show();
             LibroBD bd = new LibroBD(this);

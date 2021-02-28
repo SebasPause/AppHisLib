@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Objeto utilizado para poder manejar la informacion de cada libro personal y/o publicado
+ */
 public class Libros implements Serializable {
     public String Autor,Descripcion,Genero,Foto,Valoracion,Id,FechaPublicado,usuarioLibro;
 

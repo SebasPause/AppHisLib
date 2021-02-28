@@ -35,19 +35,37 @@
                 android:background="@drawable/forma_rectangulo_negro"
                 android:contentDescription="@string/imgLibro"/>
 
-            <TextView
-                android:id="@+id/txtAutor"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="@string/txtAutor"
-                android:textSize="18sp"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="5dp"
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp"
                 android:background="@drawable/forma_rectangulo_negro"
-                android:layout_marginEnd="10dp" />
+                android:layout_marginEnd="10dp">
+
+                <TextView
+                    android:id="@+id/textoAutor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="@string/textoAutor"
+                    android:maxLength="20"
+                    android:textSize="18sp"/>
+
+                <TextView
+                    android:id="@+id/txtAutor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="@string/txtAutor"
+                    android:maxLength="20"
+                    android:textSize="18sp"/>
+
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/txtDescripcion"

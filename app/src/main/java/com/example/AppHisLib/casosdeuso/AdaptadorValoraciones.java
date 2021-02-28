@@ -37,12 +37,15 @@ public class AdaptadorValoraciones extends RecyclerView.Adapter<AdaptadorValorac
         return librospublicadosViewHolder;
     }
 
+    /**
+     * Obtengo cada dato y lo establezco en su holder
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull ValoracionesViewHolder holder, int position) {
         String comentario = valoraciones.get(position).comentario;
         String valor = valoraciones.get(position).valor;
-
-        Toast.makeText(contexto, "Comentario: "+comentario+" Valor: "+valor, Toast.LENGTH_SHORT).show();
 
         holder.txtComentario.setText(comentario);
         holder.ratingBar.setRating(Float.parseFloat(valor));

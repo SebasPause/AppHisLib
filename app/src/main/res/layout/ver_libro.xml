@@ -18,8 +18,10 @@
         android:clickable="true"
         android:src="@drawable/ic_back"
         app:backgroundTint="@color/white"
+        android:contentDescription="@string/btnRetroceder"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:focusable="true" />
 
     <TextView
         android:id="@+id/edtEscribirLibro"
@@ -31,7 +33,6 @@
         android:layout_marginBottom="80dp"
         android:background="@color/white"
         android:gravity="start"
-        android:inputType="text"
         android:textColor="@color/black"
         android:textAlignment="textStart"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,10 +49,12 @@
         android:layout_marginRight="70dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
+        android:contentDescription="@string/btnAvanzar"
         android:src="@drawable/ic_forward"
         app:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true" />
 
     <TextView
         android:id="@+id/txtPagina"
@@ -62,8 +65,8 @@
         android:layout_marginEnd="51dp"
         android:layout_marginRight="51dp"
         android:layout_marginBottom="25dp"
-        android:text="Pagina 1"
-        android:textSize="30dp"
+        android:text="@string/pagina"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnForward"
         app:layout_constraintStart_toEndOf="@+id/btnBack" />

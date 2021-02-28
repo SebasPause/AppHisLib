@@ -2,6 +2,9 @@ package com.example.AppHisLib.casosdeuso;
 
 import java.util.List;
 
+/**
+ * Objeto utilizado para manejar las valoraciones de cada libro
+ */
 public class Valoracion {
     public String comentario,valor;
     

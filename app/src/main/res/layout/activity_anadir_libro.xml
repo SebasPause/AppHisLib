@@ -98,9 +98,10 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="62dp"
+        android:backgroundTint="@color/gris"
         android:contentDescription="@string/btnLibro"
         android:src="@drawable/ic_check"
-        android:backgroundTint="@color/gris"
+        app:backgroundTint="@color/gris"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:targetApi="lollipop" />

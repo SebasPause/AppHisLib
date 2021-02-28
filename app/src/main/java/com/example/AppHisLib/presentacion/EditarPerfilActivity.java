@@ -70,9 +70,6 @@ public class EditarPerfilActivity extends AppCompatActivity {
     Button btnGuardarDatosPerfil;
     private String usuario;
     Uri uri;
-    InputStream stream = null;
-    File file = null;
-    private Bitmap my_image;
 
     //Para la foto de perfil
     private static final int REQUEST_PERMISION_CAMERA = 1;
@@ -106,8 +103,15 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        /**
+         * Metodo para cargar la imagen
+         */
         downloadSetImage();
 
+        /**
+         * Obtengo los datos existentes en la base de datos externa
+         * y los aplico en sus correspondientes campos
+         */
         myRef = db.getReference().child("Usuarios").child(usuario).child("Perfil");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -124,6 +128,11 @@ public class EditarPerfilActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Al pulsar el boton de guardar datos del perfil
+         * recogera todos los datos del layout y utilizara el metodo
+         * updateChildren para actualizar esos datos en la base de datos externa
+         */
         btnGuardarDatosPerfil.setOnClickListener(v -> {
             usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
             myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
@@ -151,6 +160,10 @@ public class EditarPerfilActivity extends AppCompatActivity {
             char charFoto = uri.toString().charAt(0);
             String letra = String.valueOf(charFoto);
 
+            /**
+             * Si se ha seleccionado una foto de la galeria o se ha tomado una foto con la camara
+             * esta valor parara a ser true, en ese caso, esa foto sera subida al Storage de firebase
+             */
             if(valor){
                 storageRef.child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg").putFile(uri);
             }
@@ -169,10 +182,17 @@ public class EditarPerfilActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Metodo utilizado para cargar la imagen del Storage en la del perfil
+     */
     public void downloadSetImage(){
         mStorage = FirebaseStorage.getInstance();
         storageRef = mStorage.getReference().child("Imagenes").child(usuario).child("Perfil").child("Foto.jpeg");
 
+        /**
+         * En el caso de que no exista el archivo,
+         * no se descargara
+         */
         if(storageRef.hashCode()<=0){
             //nada
         }else{

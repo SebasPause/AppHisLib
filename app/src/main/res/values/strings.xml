@@ -1,10 +1,12 @@
 <resources>
-    <string name="app_name">Bienvenid@ a TULIB!</string>
+    <!--Usados en varias partes-->
+    <string name="app_name">TULIB</string>
     <string name="imgApp">ImagenApp</string>
     <string name="imgLibro">ImagenLibro</string>
     <string name="imgPerfil">ImagenPerfil</string>
     <string name="txtCorreo">Correo</string>
     <string name="txtAutor">Autor</string>
+    <string name="textoAutor">Autor: </string>
     <string name="txtDescripcion">Descripcion Max 180 caracteres</string>
     <string name="txtGenero">Genero: </string>
     <string name="txtValoracion">Valoración: </string>
@@ -22,6 +24,27 @@
     <string name="btnFinalizar">Finalizar</string>
     <string name="btnVolver">Volver</string>
     <string name="btnLibro">AñadirLibro</string>
+    <string name="btnRetroceder">Retroceder</string>
+    <string name="btnAvanzar">Avanzar</string>
+
+    <!--Usados en activity_escribir_libro-->
+    <string name="vacio"> </string>
+    <string name="pagina">Página 1</string>
+
+    <!--Usados en lista_valoraciones-->
+    <string name="txtComentario">Comentario</string>
+
+    <!--Usados en activity_valoraciones-->
+    <string name="intComentario">Introduce tu comentario:</string>
+    <string name="txtComentario2">Comentario: </string>
+    <string name="txtValoracion2">Valoracion: </string>
+    <string name="btnEnviar">Enviar</string>
+    <string name="btnEliminar">Eliminar</string>
+
+    <!--Usado en editar_perfil-->
+    <string name="txtEdad">Edad</string>
+    <string name="btnGuardar">Guardar</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

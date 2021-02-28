@@ -50,7 +50,6 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
     List<Libros> librosPublicados;
     Uri uri;
 
-
     public AdaptadorLibrosPublicados(Context contexto, List<Libros> librosPublicados){
         this.contexto = contexto;
         this.librosPublicados = librosPublicados;
@@ -97,6 +96,9 @@ public class AdaptadorLibrosPublicados extends RecyclerView.Adapter<AdaptadorLib
         char charFoto = foto.charAt(0);
         String letra = String.valueOf(charFoto);
 
+        /**
+         * Si la letra empieza por a significa que es la uri por defecto
+         */
         if(letra.equals("a")) {
             holder.imagenListaLibros.setImageURI(uri);
         }else{

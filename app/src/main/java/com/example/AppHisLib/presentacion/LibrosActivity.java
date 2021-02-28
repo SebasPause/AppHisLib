@@ -8,14 +8,12 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.AppHisLib.R;
 import com.example.AppHisLib.casosdeuso.AdaptadorListaLibros;
 import com.example.AppHisLib.casosdeuso.Libros;
-import com.example.AppHisLib.casosdeuso.ListaLibros;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +27,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase que implementa un adaptador de los libros personales
+ */
 public class LibrosActivity extends BaseActivity implements Serializable {
 
     FloatingActionButton anadirLibro;
@@ -46,12 +47,20 @@ public class LibrosActivity extends BaseActivity implements Serializable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.libros);
 
+        /**
+         * Datos relacionados al menu superior de la app
+         */
         actionBar = getSupportActionBar();
         actionBar.setTitle("Libros");
 
         anadirLibro = findViewById(R.id.anadirLibro);
         btnNavegacion = findViewById(R.id.btnNavegacion);
 
+        /**
+         * En caso de que el boton flotante se seleccione
+         * procederá a realizar un intent enviando el valor true
+         * de que se va a crear un nuevo libro
+         */
         anadirLibro.setOnClickListener(v -> {
             Intent intent = new Intent(LibrosActivity.this, AnadirLibroActivity.class);
             intent.putExtra("AnadirLibro",true);
@@ -62,6 +71,10 @@ public class LibrosActivity extends BaseActivity implements Serializable {
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        /**
+         * Obtengo toda la informacion relacionada con el cada libro
+         * para poder hacer uso de un adaptador que se encargue de manejar todos esos datos
+         */
         myRef = db.getReference().child("Usuarios").child(usuario).child("Libros");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -94,11 +107,18 @@ public class LibrosActivity extends BaseActivity implements Serializable {
         });
     }
 
+    /**
+     * Metodo para actualizar el estado del menu inferior
+     */
     private void updateNavigationBarState(){
         int actionId = getBottomNavigationMenuItemId();
         selectedBottomNavigationBarItem(actionId);
     }
 
+    /**
+     * Metodo que sirve para decirle al menu que estamos en este activity
+     * @param itemId
+     */
     void selectedBottomNavigationBarItem(int itemId){
         MenuItem item = btnNavegacion.getMenu().findItem(itemId);
         item.setChecked(true);
@@ -111,6 +131,9 @@ public class LibrosActivity extends BaseActivity implements Serializable {
         updateNavigationBarState();
     }
 
+    /**
+     * Metodo para volver a obtener los datos al pasar por el ciclo de vida de la app
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -152,6 +175,11 @@ public class LibrosActivity extends BaseActivity implements Serializable {
 
     }
 
+    /**
+     * Metodo para poder interactuar con los elementos del menu inferior
+     * @param item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         btnNavegacion.postDelayed(() -> {

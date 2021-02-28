@@ -67,8 +67,15 @@ public class ValoracionesActivity extends AppCompatActivity {
         edtComentario = findViewById(R.id.edtComentario);
         ratingBar = findViewById(R.id.ratingBar);
 
+        /**
+         * Hago que el liner layout sea visible
+         */
         llContenido.setVisibility(View.VISIBLE);
 
+        /**
+         * Datos relacionados al menu superior
+         * Habilito una flecha para poder volver al activity anterior
+         */
         actionBar = getSupportActionBar();
         actionBar.setTitle("Valoraciones");
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -76,6 +83,10 @@ public class ValoracionesActivity extends AppCompatActivity {
 
         usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        /**
+         * Establezco por defecto el comentario y el valor del rating bar
+         * del linear layout
+         */
         edtComentario.setText("");
         ratingBar.setRating(0.0f);
 
@@ -83,6 +94,13 @@ public class ValoracionesActivity extends AppCompatActivity {
         if(extras==null){
             //nada
         }else{
+            /**
+             * Siempre se llega a esta actividad con un putExtra
+             * entonces el paso anterior es por si sucede algun error inesperado.
+             * Con el metodo devolverValoraciones() obtengo todos los comentarios y valoraciones
+             * realizadas en el libro actual y los guardo en un arrayList para que el adaptador
+             * se encargue de manejar y mostrar esa informacion
+             */
             idLibro = extras.getString("IDlibro");
             usuarioLibro = extras.getString("UsuarioLibro");
             bd = new LibroBD(this);
@@ -95,9 +113,18 @@ public class ValoracionesActivity extends AppCompatActivity {
             rvValoraciones.setHasFixedSize(true);
             rvValoraciones.setAdapter(adapter2);
 
-            LibroBD bd = new LibroBD(this);
+            /**
+             * Gracias al metodo cargarComentario(),
+             * puedo averiguar si el usuario actual ha echo algun comentario en el libro actual.
+             * Si no ha echo ningun comentario, podra realizar un comentario.
+             * En el caso contrario, se introducirán en el campo del comentario del linear layout,
+             * el comentario realizado y se establecerá su correspondiente valoracion en el ratingBar.
+             * Gracias a esto podre eliminar la valoracion ya que el usuario actual no puede comentar
+             * varias veces en el mismo libro
+             */
+            bd = new LibroBD(this);
             if(bd.cargarComentario(usuario,idLibro).size()<=0){
-                Toast.makeText(this, "Esta vacio", Toast.LENGTH_SHORT).show();
+                //nada
             }else{
                 cargarComentario = bd.cargarComentario(usuario,idLibro);
                 edtComentario.setText(cargarComentario.get("Comentario"));
@@ -108,12 +135,19 @@ public class ValoracionesActivity extends AppCompatActivity {
 
         }
 
+        /**
+         * Cuando se envie un comentario , el linear layout desaparecerá
+         */
         btnEnviarComentario.setOnClickListener(v -> {
             llContenido.setVisibility(View.GONE);
 
             usuario = FirebaseAuth.getInstance().getCurrentUser().getUid();
             myRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(usuarioLibro).child("Libros").child(idLibro).child("Valoraciones");
 
+            /**
+             * Obtengo los usuarios que han comentado en este libro gracias
+             * al metodo devolverUsuarios() asignandole el id del libro como parametro.
+             */
             LibroBD bd = new LibroBD(this);
             List<String> usuarios = new ArrayList<>();
             usuarios = bd.devolverUsuarios(idLibro);
@@ -124,7 +158,11 @@ public class ValoracionesActivity extends AppCompatActivity {
                 }
             }
 
-
+            /**
+             * Si no existe ese usuario en la valoracion de ese libro,
+             * podra hacer su comentario.
+             * En caso contrario se le informará de que ya ha realizado su comentario.
+             */
             if(!existeUsuario){
                 Map<String, Object> hopperUpdates = new HashMap<>();
                 hopperUpdates.put("Comentario",edtComentario.getText().toString());
@@ -140,6 +178,12 @@ public class ValoracionesActivity extends AppCompatActivity {
 
         }); //fin btnEnviarComentario
 
+        /**
+         * Es el mismo procedimiento que el boton anterior, salvo que en este caso
+         * es para eliminar el comentario.
+         * Si existe el usuario en la valoracion del libro, se borrara el comentario.
+         * En caso contrario se le informará de que no ha realizado ningun comentario.
+         */
         btnEliminarComentario.setOnClickListener(v -> {
             LibroBD bd = new LibroBD(this);
             List<String> usuarios = new ArrayList<>();

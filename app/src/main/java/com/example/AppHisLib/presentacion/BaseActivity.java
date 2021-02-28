@@ -15,6 +15,10 @@ import com.example.AppHisLib.presentacion.PerfilActivity;
 import com.example.AppHisLib.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * Clase utilizada para realizar el menu de navegacion inferior
+ * y para poder interactuar con los elementos que tiene
+ */
 public abstract class BaseActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     BottomNavigationView btnNavegacion;
@@ -25,7 +29,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         btnNavegacion = (BottomNavigationView)findViewById(R.id.btnNavegacion);
-
         btnNavegacion.setOnNavigationItemSelectedListener(this);
 
     }
@@ -38,6 +41,11 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
         overridePendingTransition(0, 0);
     }
 
+    /**
+     * Dependiendo el item seleccionado, se creara una nueva activity
+     * @param item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         btnNavegacion.postDelayed(() -> {
@@ -60,11 +68,18 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
         return true;
     }
 
+    /**
+     * Metodo para actualizar el estado del menu
+     */
     private void updateNavigationBarState(){
         int actionId = getBottomNavigationMenuItemId();
         selectedBottomNavigationBarItem(actionId);
     }
 
+    /**
+     * Metodo que permite obtener el item seleccionado del menu
+     * @param itemId
+     */
     void selectedBottomNavigationBarItem(int itemId){
         MenuItem item = btnNavegacion.getMenu().findItem(itemId);
         item.setChecked(true);

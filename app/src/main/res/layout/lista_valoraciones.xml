@@ -9,27 +9,26 @@
     app:cardUseCompatPadding="true"
     android:id="@+id/cvListaValoraciones">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!--Para la foto -->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:orientation="vertical"
-            android:paddingLeft="10dp">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:background="@drawable/forma_rectangulo_naranja">
 
             <TextView
                 android:id="@+id/txtComentario"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Comentario"
-                android:textSize="18dp"
-                android:paddingTop="10dp"/>
+                android:text="@string/txtComentario"
+                android:textSize="18sp"
+                android:paddingTop="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp" />
 
             <RatingBar
                 android:id="@+id/ratingBar"
@@ -44,9 +43,7 @@
                 android:paddingBottom="10dp"
                 android:clickable="true"
                 android:layout_gravity="center"
-                />
+                android:focusable="true" />
         </LinearLayout>
-    </RelativeLayout>
-
 
 </androidx.cardview.widget.CardView>

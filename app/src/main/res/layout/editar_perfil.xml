@@ -32,7 +32,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="20dp"
                 android:layout_marginLeft="20dp"
-                android:hint="Autor"
+                android:hint="@string/txtAutor"
                 android:textSize="18sp"
                 android:maxLength="30"
                 android:layout_marginRight="10dp"
@@ -40,7 +40,9 @@
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp"
                 android:background="@drawable/forma_rectangulo_negro"
-                android:layout_marginEnd="20dp"/>
+                android:layout_marginEnd="20dp"
+                android:autofillHints=""
+                android:inputType="text" />
 
             <EditText
                 android:id="@+id/txtDescripcion"
@@ -52,10 +54,12 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="5dp"
                 android:maxLength="180"
-                android:hint="Descripcion Max 180 caracteres"
+                android:hint="@string/txtDescripcion"
+                android:inputType="text"
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp"
-                android:background="@drawable/forma_rectangulo_negro" />
+                android:background="@drawable/forma_rectangulo_negro"
+                android:autofillHints="" />
 
             <EditText
                 android:id="@+id/txtEdad"
@@ -65,12 +69,13 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginRight="20dp"
-                android:hint="Edad"
+                android:hint="@string/txtEdad"
                 android:ems="10"
                 android:inputType="number"
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp"
-                android:background="@drawable/forma_rectangulo_negro" />
+                android:background="@drawable/forma_rectangulo_negro"
+                android:autofillHints="" />
 
         </LinearLayout>
 
@@ -82,8 +87,7 @@
         android:layout_marginLeft="128dp"
         android:layout_marginTop="40dp"
         android:layout_below="@id/linearLayout"
-        android:layout_weight="1"
-        android:text="Guardar cambios"
+        android:text="@string/btnGuardar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 

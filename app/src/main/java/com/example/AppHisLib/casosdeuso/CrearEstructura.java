@@ -32,12 +32,22 @@ public class CrearEstructura {
     private DatabaseReference myRef, myRef2;
     List<Libros> listaLibrosPublicados;
 
+    /**
+     * Constructor de la clase
+     * @param contexto
+     * @param usuario
+     * @param myRef
+     */
     public CrearEstructura(Context contexto, String usuario, DatabaseReference myRef) {
         this.contexto = contexto;
         this.usuario = usuario;
         this.myRef = myRef;
     }
 
+    /**
+     * Metodo para crear la estructura del usuario, que colgara de la raiz "Usuarios"
+     * Eesta estructura estara formado por usuario(perfil,libros)
+     */
     public void crearEstructuraDatos() {
         myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
 
@@ -67,20 +77,41 @@ public class CrearEstructura {
         });
     } //fin metodo crearEstructura
 
-
-    //Metodo para borrar un libro
+    /**
+     * Metodo para borrar un libro al cual se le pasa dos parametros
+     * Permite encontrar el libro a borrar gracias a esos dos parametros
+     * y lo borra de la base de datos externa con el metodo removeValue()
+     * Tambien borra la imagen del libro guardada en el Storage de firebase
+     * con el metodo delete()
+     * @param id
+     * @param usuarioEliminar
+     */
     public void borrarLibro(String id, String usuarioEliminar) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         FirebaseStorage mStorage = FirebaseStorage.getInstance();
         StorageReference storageRef = mStorage.getReference().child("Imagenes").child(usuarioEliminar).child("Libros").child(id).child("Libro.jpeg");
-        System.out.println("Referencia de la imagen: " + storageRef);
-        storageRef.delete();
+
+        if(storageRef.hashCode()<=0){
+            //nada
+        }else{
+            storageRef.delete();
+        }
+
         myRef = db.getReference().child("Usuarios").child(usuarioEliminar).child("Libros").child(id);
         myRef.removeValue();
         Toast.makeText(contexto, "Libro borrado", Toast.LENGTH_SHORT).show();
 
     }
 
+    /**
+     * Metodo para publicar un libro
+     * Se le cambia el valor de publicarValor a true, entonces gracias a este cambio
+     * en la lista de publicaciones obtendrá que el campo "Publicado" es true y lo insertará en el recycler view
+     * Se establecerá tambien la fecha en la que se ha publicado
+     * @param id
+     * @param usuarioLibro
+     * @param publicarValor
+     */
     public void publicarLibro(String id, String usuarioLibro,boolean publicarValor) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         myRef = db.getReference().child("Usuarios").child(usuarioLibro).child("Libros");
@@ -91,58 +122,5 @@ public class CrearEstructura {
         myRef.child(id).updateChildren(hopperUpdates);
 
     } //fin publicarLibro
-
-
-    public List<Libros> cargarLibrosPublicados() {
-        listaLibrosPublicados = new ArrayList<>();
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference("Usuarios");
-        myRef2 = FirebaseDatabase.getInstance().getReference("Usuarios");
-        myRef = db.getReference().child("Usuarios");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    myRef2 = myRef2.child(ds.getKey()).child("Libros");
-                    myRef2.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (DataSnapshot ds2 : snapshot.getChildren()) {
-                                boolean publicado = ds2.child("Publicado").getValue(Boolean.class);
-                                if (publicado) {
-                                    //se insertara en la lista de libros
-                                    String autor = ds2.child("Autor").getValue(String.class);
-                                    String descripcion = ds2.child("Descripcion").getValue(String.class);
-                                    String foto = ds2.child("Foto").getValue(String.class);
-                                    String genero = ds2.child("Genero").getValue(String.class);
-                                    String Id = ds2.child("Id").getValue(String.class);
-                                    String valoracion = ds2.child("Valoracion").getValue(String.class);
-                                    String FechaPublicado = ds2.child("FechaPublicado").getValue(String.class);
-                                    String usuarioLibro = ds2.child("Usuario").getValue(String.class);
-                                    Libros libro = new Libros(autor, descripcion, genero, foto, valoracion, Id, FechaPublicado,usuarioLibro);
-
-                                    listaLibrosPublicados.add(libro);
-                                } else {
-                                    //no esta publicado
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        return listaLibrosPublicados;
-    }
-
 
 }

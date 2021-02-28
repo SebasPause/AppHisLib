@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.AppHisLib.R;
@@ -16,11 +17,18 @@ public class RegistroActivity extends AppCompatActivity {
 
     EditText etRepConReg,etConReg,etUsReg;
     Button btn_Finalizar,btnVolverRegistro;
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registro);
+
+        /**
+         * Datos relacionados al menu superior
+         */
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("Bienvenid@ a TULIB!");
 
         etRepConReg = (EditText)findViewById(R.id.etRepConReg);
         etConReg = (EditText)findViewById(R.id.etConReg);
@@ -28,6 +36,10 @@ public class RegistroActivity extends AppCompatActivity {
         btn_Finalizar = (Button)findViewById(R.id.btn_Finalizar);
         btnVolverRegistro = (Button)findViewById(R.id.btnVolverRegistro);
 
+        /**
+         * Al seleccionar el boton de finalizar,se haran las comprobaciones correspondientes de firebase
+         * y si no ha habido ningun problema, el registro se habra realizado correctamente
+         */
         btn_Finalizar.setOnClickListener(v -> {
             if (etUsReg.getText().toString().isEmpty() || etConReg.getText().toString().isEmpty()) {
                 Toast.makeText(RegistroActivity.this, "Introduce correo y/o contraseña", Toast.LENGTH_SHORT).show();
@@ -52,6 +64,9 @@ public class RegistroActivity extends AppCompatActivity {
             }
         }); //finaliza btn_Finalizar
 
+        /**
+         * Si se selecciona el boton de volver, se retorna al activity de login
+         */
         btnVolverRegistro.setOnClickListener(v -> {
             Intent intent = new Intent(RegistroActivity.this, MainActivity.class);
             startActivity(intent);

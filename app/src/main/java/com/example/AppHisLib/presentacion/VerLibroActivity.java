@@ -26,19 +26,12 @@ import java.util.Map;
 
 public class VerLibroActivity extends AppCompatActivity {
 
-    FirebaseDatabase db;
-    private String usuario;
-    DatabaseReference myRef;
     TextView edtEscribirLibro,txtPagina;
-    String autor,nrPagina,texto;
     FloatingActionButton btnForward,btnBack;
     HashMap<String,String> contenidoPagina;
-    int posicion;
     int numeroDePaginas;
-    int numeroNuevaPagina;
     String IdLibro;
     Bundle extras;
-    Boolean NuevaPagina;
     int posicionActual;
     ActionBar actionBar;
     Collection<String> valores;
@@ -50,14 +43,25 @@ public class VerLibroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ver_libro);
 
+        /**
+         * Siempre al entrar al activity la primera pagina tendrá el numero 1
+         */
         posicionActual = 1;
 
+        /**
+         * Datos relacionados al menu superior
+         * Habilita una flecha para volver al activity anterior
+         */
         actionBar = getSupportActionBar();
         actionBar.setTitle("Ver Libro");
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
         extras = getIntent().getExtras();
+        /**
+         * Si proviene del adaptador de libros publicados,
+         * las paginas y su contenido seran obtenidos con el metodo cargarPaginasLibro()
+         */
         if(extras.getBoolean("LibroPublicado")){
             IdLibro = extras.getString("IdLibro");
             LibroBD bd = new LibroBD(this);
@@ -65,45 +69,62 @@ public class VerLibroActivity extends AppCompatActivity {
                 contenidoPagina = bd.cargarPaginasLibro(IdLibro);
                 valores = contenidoPagina.values();
             }
-        }else{
+        }
+        /**
+         * Si proveien del adaptador de libros personales,
+         * las paginas y su contenido seran obtenidos desde un putExtra
+         */
+        else{
             contenidoPagina = (HashMap<String,String>)extras.getSerializable("Paginas");
             IdLibro = extras.getString("IdLibro");
             valores = contenidoPagina.values();
         }
-
-
 
         edtEscribirLibro = findViewById(R.id.edtEscribirLibro);
         btnForward = findViewById(R.id.btnForward);
         btnBack = findViewById(R.id.btnBack);
         txtPagina = findViewById(R.id.txtPagina);
 
-
-        System.out.println("Aqui tengo los valores: "+valores.toString());
-
         //Aqui hago el setText
-        edtEscribirLibro.setText(contenidoPagina.getOrDefault("1","No lo coge"));
-        txtPagina.setText("Pagina 1");
+        edtEscribirLibro.setText(contenidoPagina.getOrDefault("1","Error"));
+        txtPagina.setText("Página 1");
 
+        /**
+         * Boton para retroceder
+         */
         btnBack.setOnClickListener(v -> {
+            /**
+             * Si la posicion actual es 1, significa que estoy en la primera pagina
+             * Sino se reducira esa variable
+             */
             if(posicionActual==1){
                 Toast.makeText(this, "Estas en la primera pagina", Toast.LENGTH_SHORT).show();
-                txtPagina.setText("Pagina "+posicionActual);
+                txtPagina.setText("Página "+posicionActual);
             } else{
                 posicionActual -= 1;
-                edtEscribirLibro.setText(contenidoPagina.getOrDefault(String.valueOf(posicionActual),"No lo coge"));
-                txtPagina.setText("Pagina "+posicionActual);
+                edtEscribirLibro.setText(contenidoPagina.getOrDefault(String.valueOf(posicionActual),"Error"));
+                txtPagina.setText("Página "+posicionActual);
             }
         });
 
+        /**
+         * Boton para avanzar
+         */
         btnForward.setOnClickListener(v -> {
+            /**
+             * Obtengo el numero de paginas totales
+             */
             numeroDePaginas = contenidoPagina.size();
-            numeroNuevaPagina = numeroDePaginas+1;
 
+            /**
+             * Si la posicion actual es menor que el numero de paginas totales,
+             * la variable se incrementa y vuelve a mostrar el contenido relacionado con ese numero de pagina.
+             * Sino significa que ya esta en la ultima pagina
+             */
             if(posicionActual<numeroDePaginas){
                 posicionActual += 1;
-                edtEscribirLibro.setText(contenidoPagina.getOrDefault(String.valueOf(posicionActual),"No lo coge"));
-                txtPagina.setText("Pagina "+posicionActual);
+                edtEscribirLibro.setText(contenidoPagina.getOrDefault(String.valueOf(posicionActual),"Error"));
+                txtPagina.setText("Página "+posicionActual);
             }else{
                 Toast.makeText(this, "Estas en la última página", Toast.LENGTH_SHORT).show();
             }

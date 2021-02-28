@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.AppHisLib.R;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     CrearEstructura ce;
     private String usuario;
     DatabaseReference myRef,myRef2;
+    ActionBar actionBar;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -47,9 +49,21 @@ public class MainActivity extends AppCompatActivity implements Serializable{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+        /**
+         * Inicializo una nueva base de datos
+         * onUpgrade() para borrar todos los datos y volver a crear las tablas
+         * obtenerdDatos() para cargar todos los datos de la base de datos externa
+         * en le base de datos interna LibroBD
+         */
         LibroBD bd = new LibroBD(this);
         bd.onUpgrade(bd.getWritableDatabase(),1,2);
         bd.obtenerDatos();
+
+        /**
+         * Datos relacionados al menu superior
+         */
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("Bienvenid@ a TULIB!");
 
         //Incializo objetos
         txtCorreo = (EditText)findViewById(R.id.txtCorreo);
@@ -59,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements Serializable{
 
         mAuth = FirebaseAuth.getInstance();
 
+        /**
+         * Boton que lleva al activity de registro del usuario
+         */
         btnRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,8 +83,12 @@ public class MainActivity extends AppCompatActivity implements Serializable{
                 startActivity(intent);
             }
         });  //finaliza btnRegistrar
-        
-        
+
+        /**
+         * Metodo que inicia sesion
+         * Comprobará si el usuario ha introducido bien los campos
+         * y en el caso contrario se le informara
+         */
         btnEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,8 +117,8 @@ public class MainActivity extends AppCompatActivity implements Serializable{
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Log.w("TAG", "signInWithCustomToken:failure", task.getException());
-                                    Toast.makeText(MainActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainActivity.this, "Vuelve a comprobar tus datos de inicio",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainActivity.this, "Si no tienes una cuenta Registrate",Toast.LENGTH_SHORT).show();
                                     updateUI(null);
                                 }
                             });
