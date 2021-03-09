@@ -46,6 +46,17 @@ public class MainActivity extends AppCompatActivity implements Serializable{
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Bundle extras = getIntent().getExtras();
+        if(extras == null){
+            //no hace nada
+        }else{
+            String codigo = extras.getString("Codigo");
+            if(codigo.equals("cerrarSesion")){
+                usuario = null;
+                onRestart();
+            }
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 

@@ -206,10 +206,12 @@ public class PerfilActivity extends BaseActivity implements Serializable {
         }
         if(id == R.id.btnCerrarSesion){
             Toast.makeText(this, "Vuelva pronto", Toast.LENGTH_SHORT).show();
-            FirebaseAuth auth= FirebaseAuth.getInstance();
+            FirebaseAuth auth = FirebaseAuth.getInstance();
             auth.signOut();
             finish();
-            System.exit(0);
+            Intent i =  new Intent(PerfilActivity.this,MainActivity.class);
+            i.putExtra("Codigo","cerrarSesion");
+            startActivity(i);
             return true;
         }
 

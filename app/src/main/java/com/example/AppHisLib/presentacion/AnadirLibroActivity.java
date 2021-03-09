@@ -343,7 +343,7 @@ public class AnadirLibroActivity extends AppCompatActivity {
                     }
                 });
             }
-
+            finish();
         }); //fin añadirLibro
 
         /**
