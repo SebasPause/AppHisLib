@@ -35,6 +35,7 @@
         android:gravity="start"
         android:textColor="@color/black"
         android:textAlignment="textStart"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -85,6 +87,9 @@ public class EscribirLibroActivity extends AppCompatActivity {
         btnForward = findViewById(R.id.btnForward);
         btnBack = findViewById(R.id.btnBack);
         txtPagina = findViewById(R.id.txtPagina);
+
+        edtEscribirLibro.setMovementMethod(null);
+        edtEscribirLibro.setMaxLines(20);
 
         //Habilito la flecha de avanzar
         btnForward.setEnabled(true);
