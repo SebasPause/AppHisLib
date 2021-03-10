@@ -50,6 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:text="@string/textoAutor"
                     android:textSize="18sp"
                     android:maxLength="30" />
@@ -97,6 +98,7 @@
                     android:layout_height="wrap_content"
                     android:maxLength="30"
                     android:text="@string/txtGenero"
+                    android:textStyle="bold"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -127,6 +129,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/txtValoracion"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="18sp"
                     android:layout_marginRight="20dp"
                     android:layout_marginEnd="20dp" />
