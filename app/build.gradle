@@ -58,4 +58,11 @@ dependencies {
     //Imagen Cropper (librería para recorte de imágenes)
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
 
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+
 }
